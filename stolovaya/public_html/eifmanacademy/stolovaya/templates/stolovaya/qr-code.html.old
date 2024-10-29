@@ -1,0 +1,362 @@
+
+
+<html>
+<head>
+    <title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css">
+<style>
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:0px;
+        max-width:500px;
+        width:100%;
+    }
+    .input-box #searcher{
+        max-width:500px;
+        width:100%;
+        float:left;
+    }
+    .input-box #searcher #searchline{
+        max-width:400px;
+        width:85%;
+        height:50px;
+        float:left;
+    }
+    .input-box #searcher .button{
+        max-width:100px;
+        width:15%;
+        height:28px;
+        float:left;
+    }
+    .input-box #searcher .select2-container{
+        float:left;
+        height:28px;
+    }
+    #maindivdata{
+        display:block;
+        top:60px;
+        position:relative;
+    }
+    #scannerdata{
+        float:left;
+        border:solid 1px;
+        max-width:500px;
+        min-width:200px;
+        width:100%;
+        height:250px;
+        display:table-cell;
+    }
+    #qr-reader{
+        max-width:500px;
+        width:100%;
+        display:flex;
+    }
+    #qr-reader__scan_region video{
+        max-height:150px;
+    }
+    #eventsdata{
+        float:left;
+        border:solid 1px;
+        max-width:500px;
+        min-width:200px;
+        width:100%;
+        height:250px;
+        display:table-cell;
+    }
+
+    #eventsdata #headka{
+        height:10%;
+        width:100%;
+        margin:0px;
+    }
+    #eventsdata #headka a#mainka{
+        float:left;
+        display:block;
+        margin:0px;
+        font-size:18px;
+    }
+    #eventsdata #headka a{
+        float:right;
+        display:block;
+        margin:0px;
+        font-size:18px;
+    }
+    #eventsdata #textarea{
+        width:100%;
+        height:90%;
+        overflow-y: scroll;
+        resize: none;
+        margin:0px;
+        font-size:12px;
+    }
+    #catofeda1 div{
+        border: solid black 1px;
+        float:left;
+        margin:5px;
+        padding:0px 3px 0px 3px;
+    }
+    #catofeda1 input[type="radio"]{
+        transform: scale(2.5);
+        margin:12px;
+    }
+    #resultaw{
+        display:block;
+        width:140px;
+        border:solid black 1px;
+        float:right;
+        height:100%;
+        background-color:white;
+        text-align:center;
+    }
+.top {
+    position: fixed;
+    z-index:999;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.top-left {
+    float: left;
+}
+
+.top-right {
+    float: right;
+}
+.button-top {
+    background-color: blue;
+    color: white;
+    margin: 1px;
+    padding: 0.6rem 0.9rem;
+    text-decoration: none;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+</style>
+</head>
+<body>
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+
+    <div id="maindivdata">
+    <div id="scannerdata">
+    <div id="qr-reader"></div>
+    <div id="qr-reader-results"></div>
+    <div id="resultik"></div>
+    <div class="input-box">
+        <form name="formstol4"></form>
+        <div id="searcher">
+        <select id="searchline" name="fioselect" form="formstol4">
+        <option></option>
+        {% for obj in datamodel1 %}
+        <option value={{obj.id}} data-zavtrak='{{obj.eda.zavtrak}}' data-obed='{{obj.eda.obed}}' data-poldnik='{{obj.eda.poldnik}}' data-ujin1='{{obj.eda.ujin1}}' data-ujin2='{{obj.eda.ujin2}}' data-obedk='{{obj.eda.obedk}}' data-obedkg1='{{obj.eda.obedkg1}}' data-obedkg2='{{obj.eda.obedkg2}}' data-zavtrakg='{{obj.eda.zavtrakg}}'>{{obj.fio}}-{{obj.classname}}</option>
+        {% endfor %}
+        </select><input type="button" form="formstol4"  class="button" value="Отметить" onclick="form4subm()"/>
+        </div>
+        <div id="catofeda1">
+            <div><input type="radio" value="zavtrak" name="rb" {% if edanow == 'zavtrak' %} checked {% endif %}>З</input></div>
+            <div><input type="radio" value="obed" name="rb" {% if edanow == 'obed' %} checked {% endif %}>О</input></div>
+            <div><input type="radio" value="poldnik" name="rb" {% if edanow == 'poldnik' %} checked {% endif %}>П</input></div>
+            <div><input type="radio" value="ujin1" name="rb" {% if edanow == 'ujin1' %} checked {% endif %}>У1</input></div>
+            <div><input type="radio" value="ujin2" name="rb" {% if edanow == 'ujin2' %} checked {% endif %}>У2</input></div>
+            
+        </div>
+    </div>
+    </div>
+    <div id="eventsdata">
+        <div id="headka"><a id="mainka">Журнал</a><div id="resultaw"></div><a>Последний результат</a></div>
+        <textarea id="textarea" disabled>
+{% for obj in datamodel1chk %}{{ obj.fio }}-{{ obj.classname }} - {{ obj.datetime|date:'H:i:s' }} - {{ obj.datetime|date:'d.m.Y' }}
+{% endfor %}
+        </textarea>
+    </div>
+    </div>
+</body>
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/select2.min.js"></script>
+
+<script src="/static/js/html5-qrcode.min.js"></script>
+<script>
+
+var qrcodebase = [
+    {% for obj in datamodel1 %}"{{obj.id}}={{obj.qrcode}}",
+    {% endfor %}
+]
+
+    function docReady(fn) {
+        // see if DOM is already available
+        if (document.readyState === "complete"
+            || document.readyState === "interactive") {
+            // call on next available tick
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    docReady(function () {
+        var resultContainer = document.getElementById('qr-reader-results');
+        var lastResult, countResults = 0;
+        function onScanSuccess(decodedText, decodedResult) {
+            if (decodedText !== lastResult) {
+                ++countResults;
+                lastResult = decodedText;
+                // Handle on success condition with the decoded message.
+                console.log(`Scan result ${decodedText}`, decodedResult);
+                //document.getElementById('resultik').innerHTML = decodedText;
+                if (arrayContains(decodedText, qrcodebase)){submittobase(decodedText.split('=')[0]);};
+            }
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 });
+            
+        html5QrcodeScanner.render(onScanSuccess);
+    });
+    $(document).ready(function() {
+    $('#searchline').select2({
+        placeholder: "Начните писать ФИО ученика",
+        maximumSelectionLength: 2,
+        language: "ru",
+//        allowClear: true,
+        closeOnSelect: true,
+    });
+    });
+ $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+function getfulldatetxt(){
+    thisdate = new Date();
+    dday = thisdate.getDate() + "";
+    if (dday.length==1) dday = "0" + dday;
+    dmonth = thisdate.getMonth() + 1 + "";
+    if (dmonth.length==1) dmonth = "0" + dmonth;
+    dyear = thisdate.getFullYear() + "";
+    fulldate1 = dday + '.' + dmonth + '.' + dyear;
+    
+    dhour = thisdate.getHours()+"";
+    if (dhour.length==1) dhour = "0" + dhour;
+    dminute = thisdate.getMinutes()+"";
+    if (dminute.length==1) dminute = "0" + dminute;
+    dsecond = thisdate.getSeconds()+"";
+    if (dsecond.length==1) dsecond = "0" + dsecond;
+    fulltime1 = dhour + ':' + dminute + ':' + dsecond;
+
+    return fulltime1 + ' - ' + fulldate1
+};
+function form4subm(){
+    //console.log('ok');
+    //console.log(document.getElementsByName("fioselect")[0].value);
+    //console.log($('#searchline option[value!=""][value|=' + document.getElementsByName("fioselect")[0].value + ']:first').html());
+    submittobase(document.getElementsByName("fioselect")[0].value)
+};
+function submittobase(valofsel){
+    var retres = {}
+    thistimeform = getfulldatetxt();
+    retres = ajaxformgoto(valofsel);
+    console.log(retres);
+    $('#textarea').prepend($('#searchline option[value!=""][value|=' + valofsel + ']:first').html() + " - " + thistimeform + " = " + retres.valid + "\n");
+    if (retres.valid == "ОК") {
+        $('#resultaw').css('background-color','green');
+        $('#resultaw').html(retres.valid);
+        $('#scannerdata').effect("highlight", {}, 1500);
+    } else {
+        $('#resultaw').css('background-color','red');
+        $('#resultaw').html(retres.valid);};
+        $('#scannerdata').effect("highlight", {}, 1500);
+}
+function arrayContains(needle, arrhaystack)
+{
+    return (arrhaystack.includes(needle));
+}
+
+function ajaxformgoto(valofsel){
+            var arrofeda = [];
+            var retres = {};
+            retres.valid = '*?*';
+            catofeda=$("#catofeda1 input[type='radio'][name='rb']:checked")[0].value;
+            dzavtrak=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('zavtrak');
+            dobed=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obed');
+            dpoldnik=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('poldnik');
+            dujin1=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('ujin1');
+            dujin2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('ujin2');
+            dobedk=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedk');
+            dobedkg1=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedkg1');
+            dobedkg2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedkg2');
+            dzavtrakg=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('zavtrakg');
+            if (dzavtrak == "True") arrofeda.push("zavtrak");
+            if (dobed == "True") arrofeda.push("obed");
+            if (dpoldnik == "True") arrofeda.push("poldnik");
+            if (dujin1 == "True") arrofeda.push("ujin1");
+            if (dujin2 == "True") arrofeda.push("ujin2");
+            if (dobedk == "True") arrofeda.push("obed");
+            if (dobedkg1 == "True") arrofeda.push("obed");
+            if (dobedkg2 == "True") arrofeda.push("obed");
+            if (dzavtrakg == "True") arrofeda.push("zavtrak");
+            //alert("З"+dzavtrak+" О"+dobed+" П"+dpoldnik+" У1"+dujin1+" У2"+dujin2+" КО"+dobedk+" Д1"+dobedkg1+" Д2"+dobedkg2+" ЗГ"+dzavtrakg);
+            //alert(catofeda)
+            //alert(dzavtrak)
+            //alert(arrofeda);
+            //alert(catofeda);
+            //alert(arrayContains(catofeda, arrofeda)+"-"+arrofeda+"="+catofeda);
+            //console.log('ok1');
+            //console.log(arrofeda + " _ " + catofeda);
+            if (arrayContains(catofeda, arrofeda)){
+                //console.log('ok2');
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: "{% url 'stolovaya:scanscan' %}",
+                    data:{
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                        uchid:valofsel,
+                        catofeda:catofeda,
+                    },
+                success: function(data){
+                        console.log(data);
+                        retres = Object.assign({},data);
+                        console.log(retres);
+                    },
+                error: function(error){
+                    console.log(error);
+                },
+                })
+            } else {
+                retres.valid = 'Отказать';
+            };
+            console.log(retres);
+            return retres;
+};
+</script>
+
+</html>

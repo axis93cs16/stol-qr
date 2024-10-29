@@ -1,0 +1,10 @@
+Options +ExecCGI
+AddHandler wsgi-script .wsgi
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.wsgi/$1 [QSA,PT,L]
+php_value default_charset utf-8
+AddType 'text/html; charset=utf-8' .html .htm .shtml
+
+
+

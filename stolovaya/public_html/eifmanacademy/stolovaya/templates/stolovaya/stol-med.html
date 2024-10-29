@@ -1,0 +1,474 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags %}
+
+
+
+{% block content %}
+{% addtoblock 'js_end' %}
+<script>
+    //    window.onload = function(){
+    //        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+    //    };
+    function work() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+                    if ("{{ alertmsg }}".length > 1) {
+                        $("#click__modal").children("#uch-v").html("{{ alertmsg }}");
+                        $("#click__modal").dialog({
+                            modal: true,
+                            height: "auto",
+                            width: "auto",
+                            title: 'Сообщение',
+                            buttons: {
+                                "Ok": function () {
+                               //СЮДА функцию записи!
+                               $(this).dialog("close");
+                                },
+                            }
+                        });
+                    };
+
+            var mindatef = (datediff(new Date(), new Date($('#datepickerf1').attr('min'))))+'d';
+            var maxdatef = (datediff(new Date(), new Date($('#datepickerf1').attr('max'))))+'d';
+//            $('#exported').append(mindatef + '/'+ maxdatef )
+            $("#datepickerf1").datepicker({
+                 dateFormat: 'yy-mm-dd',
+                 minDate: mindatef,
+                 maxDate: maxdatef,
+                 showOn: 'both',
+                 buttonText: 'календарь',
+                  buttonImage: '/static/js/calendar.gif',
+                  buttonImageOnly: true,
+                 hideIfNoPrevNext: true,
+                 locale: {
+                    format: 'yy-mm-dd'
+                    },
+            });
+
+
+    }
+    function datediff(first, second) {
+        return parseInt((second - first) / (1000 * 60 * 60 * 24));
+//        return Math.floor((second - first) / (1000 * 60 * 60 * 24));
+//        return Math.round((second - first) / (1000 * 60 * 60 * 24));
+//        return (first-second)
+    }
+
+
+    if (document.readyState == 'loading') {
+        // ещё загружается, ждём события
+        document.addEventListener('DOMContentLoaded', work);
+    } else {
+        // DOM готов!
+        work();
+    }
+
+    function form1subm() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol').submit()
+    }
+
+    function form2subm() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol2').submit()
+    }
+
+    function form3subm(idofcheck) {
+        if (document.getElementById(idofcheck).checked){
+            document.getElementById('datepickerf3').value = document.getElementById('datepickerf1').value;
+            document.getElementById('formstol3').submit()
+            };
+    }
+
+    function form4subm() {
+        if (document.getElementById('searchline').value != ''){
+            document.getElementById('datepickerf4').value = document.getElementById('datepickerf1').value;
+            document.getElementById('formstol4').submit()
+            }
+    }
+
+</script>
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/select2.min.js"></script>
+<script src="/static/js/datepicker-ru.js"></script>
+
+<script>
+$(function() {
+    $(".checkbox__click").on("change", function(){
+        var uchid = $(this).data("uchid");
+        var edaid = '#edaint' + uchid
+        //alert($(this).prop('checked'))
+        if ($(this).prop('checked')) {
+            $(edaid).hide();
+        }else{
+            $(edaid).show();
+        };
+    });
+
+    $(".button__click").on("click", function() {
+        var uch = $(this).data("uch");
+        var datpit = $(this).data("datpit");
+        var uchid = $(this).data("uchid");
+        savedatatobase(datpit,uchid);
+//        $("#click__modal").children("#uch-v").html(uch);
+//        $("#click__modal").children("#datpit-v").html(datpit);
+//            alert($('#zavtrak').is(':checked'));
+//        getformdata(datpit,uchid);
+//        $("#click__modal").dialog({
+//                modal: true,
+//                height: "auto",
+//                width: "auto",
+//                title: uchid + " - " + uch + " с " + datpit,
+//                buttons: {
+//                    // "Add Number": ,
+//                    "Cancel": function () {
+//                       $(this).dialog("close");
+//                    },
+//                    "ok": function () {
+//                       //СЮДА функцию записи!
+//                       saveformdata(datpit,uchid);
+//                       $(this).dialog("close");
+//                    },
+//                }
+//            }
+//        )
+    });
+});
+ function saveformdata(datpit,uchid){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                    zavtrak:$('#zavtrak').is(':checked'),
+                    obed:$('#obed').is(':checked'),
+                    poldnik:$('#poldnik').is(':checked'),
+                    ujin1:$('#ujin1').is(':checked'),
+                    ujin2:$('#ujin2').is(':checked'),
+                },
+            success: function(data){
+                    console.log(data);
+//                    alert(data);
+                    $('#hiddeninput').html(data);
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+ function getformdata(datpit,uchid){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test2' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                },
+            success: function(data){
+                    console.log(data);
+//                    alert(data);
+//                    var arrjson = $.parseJSON(data);
+                    if (data.zavtrak=="True") {$('#zavtrak').prop('checked', true)} else {$('#zavtrak').prop('checked', false)};
+                    if (data.obed=="True") {$('#obed').prop('checked', true)} else {$('#obed').prop('checked', false)};
+                    if (data.poldnik=="True") {$('#poldnik').prop('checked', true)} else {$('#poldnik').prop('checked', false)};
+                    if (data.ujin1=="True") {$('#ujin1').prop('checked', true)} else {$('#ujin1').prop('checked', false)};
+                    if (data.ujin2=="True") {$('#ujin2').prop('checked', true)} else {$('#ujin2').prop('checked', false)};
+                    if (data.obedk=="True") {$('#obedk').prop('checked', true)} else {$('#obedk').prop('checked', false)};
+                    if (data.obedkg1=="True") {$('#obedkg1').prop('checked', true)} else {$('#obedkg1').prop('checked', false)};
+                    if (data.obedkg2=="True") {$('#obedkg2').prop('checked', true)} else {$('#obedkg2').prop('checked', false)};
+                    if (data.obedkg3=="True") {$('#obedkg3').prop('checked', true)} else {$('#obedkg3').prop('checked', false)};
+                    if (data.internatp=="True") {$('#internatp').prop('checked', true)} else {$('#internatp').prop('checked', false)};
+//                    $('#hiddeninput').html(data.zavtrak);
+//                    alert(data);
+                },
+            error: function(error){
+                console.log(error)
+                $('#hiddeninput').html(error);
+            },
+            })
+    }
+
+
+$(document).ready(function() {
+    $('#searchline').select2({
+        placeholder: "Начните писать ФИО ученика",
+        maximumSelectionLength: 2,
+        language: "ru",
+//        allowClear: true,
+        closeOnSelect: true,
+    });
+//    $('#searchline').select2('open');
+//    $('#searchline').select2('focus');
+//    $('.select2-search__field').focus();
+});
+ $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+//$('#searchline').on('select2:select', function (e) { 
+//    console.log('select event');
+//});
+ function savedatatobase(datpit,uchid){
+            var zavtrakid='#zavtrak'+uchid
+            var obedid='#obed'+uchid
+            var obedkid='#obedk'+uchid
+            var obedkg1id='#obedkg1'+uchid
+            var obedkg2id='#obedkg2'+uchid
+            var obedkg3id='#obedkg3'+uchid
+            var internatpid='#internatp'+uchid
+            var poldnikid='#poldnik'+uchid
+            var ujin1id='#ujin1'+uchid
+            var ujin2id='#ujin2'+uchid
+            var zavtrakgid='#zavtrakg'+uchid
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                    zavtrak:$(zavtrakid).is(':checked'),
+                    obed:$(obedid).is(':checked'),
+                    poldnik:$(poldnikid).is(':checked'),
+                    ujin1:$(ujin1id).is(':checked'),
+                    ujin2:$(ujin2id).is(':checked'),
+                    obedk:$(obedkid).is(':checked'),
+                    obedkg1:$(obedkg1id).is(':checked'),
+                    obedkg2:$(obedkg2id).is(':checked'),
+                    obedkg3:$(obedkg3id).is(':checked'),
+                    internatp:$(internatpid).is(':checked'),
+                    zavtrakg:$(zavtrakgid).is(':checked'),
+                    medflag:'1',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut'+uchid;
+                        if (data.alertmsg) {
+                            $("#click__modal").children("#uch-v").html(data.alertmsg);
+                            $("#click__modal").dialog({
+                                modal: true,
+                                height: "auto",
+                                width: "auto",
+                                title: 'Сообщение',
+                                buttons: {
+                                    "Ok": function () {
+                                   //СЮДА функцию записи!
+                                   $(this).dialog("close");
+                                    },
+                                }
+                            });
+                        };
+                        if (data.zavtrak=="True") {$(zavtrakid).prop('checked', true)} else {$(zavtrakid).prop('checked', false)};
+                        if (data.obed=="True") {$(obedid).prop('checked', true)} else {$(obedid).prop('checked', false)};
+                        if (data.obedk=="True") {$(obedkid).prop('checked', true)} else {$(obedkid).prop('checked', false)};
+                        if (data.obedkg1=="True") {$(obedkg1id).prop('checked', true)} else {$(obedkg1id).prop('checked', false)};
+                        if (data.obedkg2=="True") {$(obedkg2id).prop('checked', true)} else {$(obedkg2id).prop('checked', false)};
+                        if (data.obedkg3=="True") {$(obedkg3id).prop('checked', true)} else {$(obedkg3id).prop('checked', false)};
+                        if (data.internatp=="True") {$(internatpid).prop('checked', true)} else {$(internatpid).prop('checked', false)};
+                        if (data.poldnik=="True") {$(poldnikid).prop('checked', true)} else {$(poldnikid).prop('checked', false)};
+                        if (data.ujin1=="True") {$(ujin1id).prop('checked', true)} else {$(ujin1id).prop('checked', false)};
+                        if (data.ujin2=="True") {$(ujin2id).prop('checked', true)} else {$(ujin2id).prop('checked', false)};
+                        if (data.zavtrakg=="True") {$(zavtrakgid).prop('checked', true)} else {$(zavtrakgid).prop('checked', false)};
+
+                    $(okiid).html('ok');
+//                    $(okiid).html(data.alertmsg);
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+
+</script>
+
+{% endaddtoblock %}
+{% addtoblock 'css' %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    input[type="date"]::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-ms-clear {
+        display: none;
+    }
+    #priems input[type="checkbox"]{
+        transform: scale(2);
+    }
+    .checkbox2 {
+        text-align: center;
+    }
+    .checkbox2 input[type="checkbox"] {
+        text-align: center;
+        transform: scale(2);
+    }
+    #searcher{
+        height:80px;
+        margin:0px;
+        padding:0px
+    }
+    #searcher .button{
+        height:60px;
+        padding:0px 20px 0px 20px
+    }
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .divpit input[type="checkbox"]{
+        transform: scale(2);
+    }
+    #datepickerdiv1{
+        display:block;
+        float:left
+    }
+    #datepickerf1disp{
+        color:black;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:3px;
+    }
+
+</style>
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css">
+{% endaddtoblock %}
+
+{% placeholder "content" %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+        <a class="button-top" href="#" onclick="form2subm()">Обновить</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container">
+<h1>Режим Медцентра<br/>(здесь добавляются и выписываются ученики и ведется дальнейший учет их питания)</h1>
+    <div id="exported"></div>
+    <form method="POST" id="formstol">{% csrf_token %} <input type="hidden" name="form1" value="1"><input type="hidden" name="selit" value="" id="selitf1"></form>
+    <form method="POST" id="formstol2">{% csrf_token %} <input type="hidden" name="form2" value="1"><input type="hidden" name="datepicker" value="" id="datepickerf2"></form>
+    <form method="POST" id="formstol3">{% csrf_token %} <input type="hidden" name="form3" value="1"><input type="hidden" name="datepicker" value="" id="datepickerf3"></form>
+    <form method="POST" id="formstol4">{% csrf_token %} <input type="hidden" name="form4" value="1"><input type="hidden" name="datepicker" value="" id="datepickerf4"></form>
+
+    <div class="input-box">
+        <div id="datepickerdiv1" onclick="$('#datepickerf1').datepicker('show')">
+        <input type="date" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" disabled id="datepickerf1disp" disabled>
+        <input type="hidden" name="datepicker" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" form="formstol" onchange="form2subm()" id="datepickerf1" readonly>
+        </div>
+
+        <select name="selit" onchange="form2subm()" form="formstol2" id="selitf2">
+            {% for itsel2,itsel in selectitems.items %}
+            <option value="{{itsel}}" {% if selit == itsel %} selected="selected" {% endif %}>Класс {{itsel}}</option>
+            {% endfor %}
+        </select>
+
+        <div id="searcher">
+        <select id="searchline" style="width:500px" name="fioselect" form="formstol4">
+        <option></option>
+        {% for obj in querysetnew %}
+        <option value={{obj.id}}>{{obj.fio}}-{{obj.classname}}</option>
+        {% endfor %}
+        </select><input type="button" form="formstol4"  class="button" value="+добавить" onclick="form4subm()"/>
+        </div>
+        
+    </div>
+    <div style="float:right; font-size:18;position:relative;top:0px;right:10px; margin:0 auto; width:50%; text-align:right">ИТОГО в таблице: <b>{{sumuch}}</b></div>
+    <table class="table-one">
+        <th>Группа</th>
+        <th>Ученик</th>
+        <th>Льгота</th>
+        <th>Режим питания(НА ВЫБРАННЫЙ ДЕНЬ)</th>
+        <th>Не будет(НЕ ЕСТ(ВООБЩЕ) В ВЫБРАННЫЙ ДЕНЬ)</th>
+        <th>Выписать</th>
+        {% for obj in datamodel1 %}
+        <tr class="{{obj.typeofeda}}">
+            <td>{{obj.classname}}</td>
+            <td>{{obj.fio}}{%if obj.dietflag != False %} - ДИЕТА{% endif %}</td>
+            <td>{{obj.typeofeda}}</td>
+            <!-- Here starts the main contents pane -->
+            
+            <td><div id="edaint{{obj.id}}"{% if obj.chkflag == True %} style="display:none"{% endif %}>
+            {% if obj.chkflag == False %}
+                                                    {% for objk, obje in obj.eda.items %}
+                    {% if objk == 'zavtrak' %} <div class="divpit">З=<input type="checkbox" id="zavtrak{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obed' %} <div class="divpit">О=<input type="checkbox" id="obed{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'poldnik' %} <div class="divpit">П=<input type="checkbox" id="poldnik{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'ujin1' %} <div class="divpit">У1=<input  type="checkbox" id="ujin1{{obj.id}}"{% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'ujin2' %} <div class="divpit">У2=<input type="checkbox" id="ujin2{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'zavtrakg' %} <div class="divpit">ЗЛ=<input type="checkbox" id="zavtrakg{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedk' %} <div class="divpit">КОМ=<input type="checkbox" id="obedk{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg1' %} <div class="divpit">ГОР1=<input type="checkbox" id="obedkg1{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg2' %} <div class="divpit">ГОР2=<input type="checkbox" id="obedkg2{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg3' %} <div class="divpit">ГОР3=<input type="checkbox" id="obedkg3{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'internatp' %} <div class="divpit">ИНТП=<input type="checkbox" id="internatp{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'datapittime' %} {% if obje|date %} <div class="divpit"> {{obje|date:'d.m.Y H:i'}}</div> {% endif %} {% endif %}
+
+                            {% endfor %}
+
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut{{obj.id}}"></a>
+                        </div>
+                    </section>
+                    {% else %}
+                        <div class="divpit">Сначала нажмите отправить внизу таблицы потом здесь появится выбор приемов пищи</div>
+                    {% endif %}</div>
+            </td>
+            <!-- Here starts the main contents pane -->
+            <td class="checkbox"><input type="hidden" name="chk{{obj.id}}" value="False" form="formstol">
+                <input type="checkbox" {% if obj.chkflag %}checked="checked"{%endif%} name="chk{{obj.id}}" value="True" form="formstol" class="checkbox__click" data-uchid="{{obj.id}}" /></td>
+                <td class="checkbox2"><input type="hidden" name="chkm{{obj.id}}" value="False" form="formstol3">
+                <input type="checkbox" name="chkm{{obj.id}}" value="True" form="formstol3" id="chkm{{obj.id}}" />
+                <input type="button" class="button" name="del_id" value="Выписать" form="formstol3" onclick="form3subm('chkm{{obj.id}}')"/></td></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="100%" height="20px"></td>
+        </tr>
+        <tr>
+            <td colspan="100%" align="right">ИТОГО: {{sumuch}}<input type="submit" class="button" value="Отправить" form="formstol">
+                <!--<input type="checkbox" value="1" name="delflag">-->
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+
+        <div id="click__modal" style="display:none;">
+            <div id="datpit-v"></div>
+            <a id="uch-v"></a><br/>
+
+        </div>
+
+
+    <input type="hidden" value="" id="hiddeninput" />
+{% endblock %}

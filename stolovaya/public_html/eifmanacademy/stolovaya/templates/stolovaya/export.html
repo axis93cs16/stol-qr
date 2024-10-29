@@ -1,0 +1,22 @@
+{% block content %}
+<div class="card card-secondary">
+  <div class="card-header">
+    <h3 class="card-title">Export Comments</h3>
+  </div>
+  <div class="card-body">
+    <form role="form" method="POST" action="{% url 'label:export_data' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+        <div class="form-group">
+          <label>Choose Format Type</label>
+          <select class="custom-select" name="file-format">
+            <option selected>Choose format...</option>
+            <option>CSV</option>
+            <option>JSON</option>
+            <option>XLS (Excel)</option>
+          </select>
+        </div> <br><br><br>
+      <button type="submit" class="btn btn-info btn-block">Export</button>
+    </form>
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,49 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags stol_extras %}
+
+{% block content %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="button-block2">
+<div>
+<h1 class="title">Выберите модуль</h1>
+</div>
+
+<div class="dividx">
+    {% if "stol-admin" in usergr or "stol-scan" in usergr %}<a class="button buttonidx" href="/scanner">Сканер</a>{% endif %}
+    {% if "stol-admin" in usergr or "stol-view" in usergr %}<a class="button buttonidx" href="/qrcodes">Коды</a>{% endif %}
+    {% if "class-ed" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/classadmin">Классные</a>{% endif %}
+    {% if "int-ed" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/intadmin">Интернат</a>{% endif %}
+    {% if "med-ed" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/medadmin">Медцентр</a>{% endif %}
+    {% if "stol-view" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/stoladmin">Просмотр</a>{% endif %}
+    {% if "stol-view" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/stoladminqr">Пр-QRконтроль</a>{% endif %}
+    {% if "stol-view" in usergr or "stol-admin" in usergr %}<a class="button buttonidx" href="/stoladminqrr1">Пропускающие</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/adminka">Админка</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/dietadmin">Диета</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/blkadmin">Блок</a>{% endif %}
+    {% if "stol-admin" in usergr or "stol-correct" in usergr %}<a class="button buttonidx" href="/korrekt">Админка-Корректировка</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/kanikuls">Каникулы</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/kanikul2">Каник-фам</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/endofyears">Конец-года</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/endofyear2">Конец-фам</a>{% endif %}
+    {% if "stol-admin" in usergr or "stol-report" in usergr %}<a class="button buttonidx" href="/report">Отчеты</a>{% endif %}
+    {% if "stol-admin" in usergr %}<a class="button buttonidx" href="/admin">Админка(admin)</a>{% endif %}
+</div>
+</div>
+
+
+
+{% endblock %}

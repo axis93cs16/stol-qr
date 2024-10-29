@@ -1,0 +1,249 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags stol_extras %}
+
+{% block content %}
+
+{% addtoblock 'js_end' %}
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/jszip.min.js"></script>
+<script src="/static/js/dataTables.buttons.min.js"></script>
+<script src="/static/js/buttons.html5.min.js "></script>
+<script>
+    $(document).ready(function() {
+            document.getElementById("datepickerf2").value = $("#datepickerf1").val();
+    });
+</script>
+{% endaddtoblock %}
+{% addtoblock 'css' %}
+<style>
+    .butka{
+        display:block;
+    }
+</style>
+<link rel="stylesheet" type="text/html" href="/static/js/jquery-dataTables/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/html" href="/static/js/jquery-dataTables/jquery.dataTables.min.css">
+<style>
+    input[type="date"]::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-ms-clear {
+        display: none;
+    }
+    #priems input[type="checkbox"]{
+        transform: scale(2);
+    }
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .divpit-r{
+        float:right;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .divpit input[type="checkbox"]{
+        transform: scale(2);
+    }
+    #datepickerdiv1{
+        display:block;
+        float:left
+    }
+    #datepickerf1disp{
+        color:black;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:3px;
+    }
+    #datepickerf1{
+        float:left;
+        height:45px;
+    }
+    .datpickrange{
+        float:left;
+        margin-left:1rem;
+        margin-right:1rem;
+        vertical-align:middle;
+        height:45px;
+        display:block
+
+    }
+    .rangepicked{
+        float:left;
+        vertical-align:middle;
+        display: inline-block;
+        height:45px;
+        background-color:#00d5df;
+    }
+    .input-box2{
+        display:block;
+        margin:3px;
+        float:left;
+    }
+    .input-box2 input{
+        font-size: 30px;
+        height: 45px;
+    }
+    .flleft{
+        float:left;
+    }
+</style>
+
+{% endaddtoblock %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+<h1>Отчеты3-бух</h1>
+    <form method="POST" id="formstolr1">
+    {% csrf_token %}
+    <input type="hidden" name="formr1" value="1">
+    <input type="hidden" name="datepicker" value="" id="datepickerf2">
+    <input type="hidden" name="otchettype" value=1>
+    <input type="submit" value="ok" form="formstolr1">
+    </form>
+
+    <form method="POST" id="formstol">{% csrf_token %} <input type="hidden" name="form7" value="1"><input type="hidden" name="otchettype" value=3></form>
+        <div class="input-box2">
+            <input type="date" name="datepicker" value='{{ datasek }}' min="{{dateminmax.0}}" max="{{dateminmax.1}}" onchange="javascript:getElementById('formstol').submit()" id="datepickerf1" readonly form="formstol">
+            <div class="rangepicked">
+                <input type="date" name="datepickerrs" value='{{ dateminmaxrep.0 }}' min="{{dateminmax.0}}" max="{{dateminmax.1}}"  id="datepickerrs" class="datpickrange" form="formstol">
+                <p class="datpickrange"> с даты - по дату </p>
+                <input type="date" name="datepickerre" value='{{ dateminmaxrep.1 }}' min="{{dateminmax.0}}" max="{{dateminmax.1}}"  id="datepickerre" class="datpickrange" form="formstol">
+                <input type="submit" value='Сформировать' form="formstol">
+            </div>
+        </div>
+        {{resultikas}}
+        <table class="table-one">
+            <tr>
+                <th rowspan="2">Дата</th>
+                <th colspan="9">Приемы пищи</th>
+            </tr>
+            <tr>
+                <th>Завтрак</th>
+                <th>Обед</th>
+                <th>Полдник</th>
+                <th>Ужин1</th>
+                <th>Ужин2</th>
+                <th>Льготники Завтрак</th>
+                <th>Льготники Обед</th>
+                <th>Договор 135р</th>
+                <th>Договор(СУП) 180р</th>
+                <th>Договор(СУП) 310р</th>
+                <th>Интернат Плат 670р</th>
+            </tr>
+
+            {% for objkd,obji in datamodel1.items %}
+            <tr class="{{obj.typeofeda}}">
+                <td>{{objkd}}</td>
+                
+
+                    <td><div class="divpit">{{obji.zavtrak}}</div></td>
+                    <td><div class="divpit">{{obji.obed}}</div></td>
+                    <td><div class="divpit">{{obji.poldnik}}</div></td>
+                    <td><div class="divpit">{{obji.ujin1}}</div></td>
+                    <td><div class="divpit">{{obji.ujin2}}</div></td>
+                    <td><div class="divpit">{{obji.zavtrakg}}</div></td>
+                    <td><div class="divpit">{{obji.obedk}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg1}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg2}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg3}}</div></td>
+                    <td><div class="divpit">{{obji.internatp}}</div></td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+        <table class="table-one">
+            <tr>
+                <th rowspan="2">Дата(началка)</th>
+                <th colspan="9">Приемы пищи</th>
+            </tr>
+            <tr>
+                <th>Завтрак</th>
+                <th>Обед</th>
+                <th>Полдник</th>
+                <th>Ужин1</th>
+                <th>Ужин2</th>
+                <th>Льготники Завтрак</th>
+                <th>Льготники Обед</th>
+                <th>Договор 135р</th>
+                <th>Договор(СУП) 180р</th>
+                <th>Договор(СУП) 310р</th>
+                <th>Интернат Плат 670р</th>
+            </tr>
+
+            {% for objkd,obji in datamodel14.items %}
+            <tr class="{{obj.typeofeda}}">
+                <td>{{objkd}}</td>
+                
+
+                    <td><div class="divpit">{{obji.zavtrak}}</div></td>
+                    <td><div class="divpit">{{obji.obed}}</div></td>
+                    <td><div class="divpit">{{obji.poldnik}}</div></td>
+                    <td><div class="divpit">{{obji.ujin1}}</div></td>
+                    <td><div class="divpit">{{obji.ujin2}}</div></td>
+                    <td><div class="divpit">{{obji.zavtrakg}}</div></td>
+                    <td><div class="divpit">{{obji.obedk}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg1}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg2}}</div></td>
+                    <td><div class="divpit">{{obji.obedkg3}}</div></td>
+                    <td><div class="divpit">{{obji.internatp}}</div></td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+<br/><br/>
+<table>
+<tr>
+<th>дата</th><th>дата(отметка)</th><th>класс</th><th>фио</th><th>нету</th><th>Льгота</th><th>З</th><th>О</th><th>П</th><th>У1</th><th>У2</th><th>ЗЛ</th><th>КОМ</th><th>ГОР1(135)</th><th>ГОР2(180)</th><th>ГОР3(310)</th><th>special</th>
+</tr>
+{% for objdw,objw in tableofeda %}
+
+<tr>
+<td>{{objdw}}</td><td id="{{objw.id}}">{{objw.datapit}}</td><td>{{objw.classname}}</td><td>{{objw.fio}}</td><td>{{objw.chkflag}}</td><td>{{objw.typeofeda}}</td><td>{{objw.eda.zavtrak}}</td><td>{{objw.eda.obed}}</td><td>{{objw.eda.poldnik}}</td><td>{{objw.eda.ujin1}}</td><td>{{objw.eda.ujin2}}</td><td>{{objw.eda.zavtrakg}}</td><td>{{objw.eda.obedk}}</td><td>{{objw.eda.obedkg1}}</td><td>{{objw.eda.obedkg2}}</td><td>{{objw.eda.obedkg3}}</td><td>{%comment%}{{objw|dictprint}}{%endcomment%}{{objw.pitendateen}}={{objw.pitendatedi}} / {{objw.eda.datnumofweek}} - {{objw.eda.datapittime}}</td>
+</tr>
+
+{% endfor %}
+</table>
+</div>
+
+
+{% endblock %}

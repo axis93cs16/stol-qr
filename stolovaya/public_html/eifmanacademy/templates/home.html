@@ -1,0 +1,22 @@
+{% load cms_tags sekizai_tags %}
+<html>
+    <head>
+        <title>{% page_attribute "page_title" %}</title>
+        <link rel="icon" href="/static/favicon.ico">
+        {% render_block 'css' %}
+	<link rel="stylesheet" type="text/css" href="/static/css/main.css?v=17">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        {% comment %}{% cms_toolbar %} {% endcomment %}
+        {% block layout %}{% endblock %}
+        {% block content %}
+            {% placeholder 'content' %}
+        {% endblock %}
+        {% block 'js' %}{% endblock %}
+        {% block 'js_end' %}{% endblock %}
+        {% render_block 'js' %}
+        {% render_block 'js_end' %}
+
+    </body>
+</html>

@@ -1,0 +1,44 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags %}
+
+{% block content %}
+{% addtoblock 'css' %}
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+{% endaddtoblock %}
+{% addtoblock 'js_end' %}
+<script src="/static/js/jquery-3.6.1.min.js">
+</script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js">
+</script>
+<script>
+$(function() {
+    $("#button__click").on("click", function() {
+        $("#click__modal").dialog({
+                modal: true,
+                height: "auto",
+                width: "30vw",
+                title: "Укажите приемы для этого ученика",
+                buttons: {
+                    // "Add Number": ,
+                   "Cancel": function () {
+                       $(this).dialog("close");
+                    }
+                }
+            }
+        )
+    });
+});
+</script>
+{% endaddtoblock %}
+    <section class="button">
+        <div class="button__title">jQueryUI modal</div>
+        <div class="button__area">
+            <button id="button__click" class="button__click">Click!</button>
+        </div>
+
+        <div id="click__modal" style="display:none;">
+            <a>привет</a>
+        </div>
+
+    </section>
+{% endblock %}

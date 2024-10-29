@@ -1,0 +1,18 @@
+{% load cms_tags sekizai_tags i18n %}
+
+{% block 'extrajs2' %}
+    <script src="/static/contacts/js/static-map.js"></script>
+{% endblock %}
+
+{% block 'extrajs3' %}
+    <script>
+    $(function() {
+        $('.contacts__map').staticMap();
+    });
+    </script>
+{% endblock %}
+
+<div class="contacts__map"
+     data-longitude="59.956422"
+     data-latitude="30.299210">
+</div>

@@ -1,0 +1,14 @@
+{% for object in objects %}
+    <div class="row contacts__official">
+        <div class="col-md-4 col-sm-4 col-md-offset-2 col-sm-offset-2 contacts__official-position">
+            {% if object.position %} {{ object.position }}: {% endif %}
+            <br>
+            {% if object.vrema %} <center>{{ object.vrema }}</center> {% endif %}
+        </div>
+        <div class="col-md-4 col-sm-4 contacts__official-phone">
+            {% if object.phone %} {{ object.phone }} {% endif %}
+            <br>
+            {% if object.email %} {{ object.email }} {% endif%}
+        </div>
+    </div>
+{% endfor %}

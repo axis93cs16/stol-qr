@@ -1,0 +1,180 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags %}
+
+
+
+{% block content %}
+{% addtoblock 'js_end' %}
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/datepicker-ru.js"></script>
+
+<script>
+    //    window.onload = function(){
+    //        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+    //    };
+    function work() {
+        //document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf21').value = document.getElementById('datepickerf1').value;
+        if ("{{alertmsg}}".length > 1) {
+            $("#click__modal").children("#uch-v").html("{{ alertmsg }}");
+            $("#click__modal").dialog({
+                    modal: true,
+                    height: "auto",
+                    width: "auto",
+                    title: 'Сообщение',
+                    buttons: {
+                        "Ok": function () {
+                           //СЮДА функцию записи!
+                           $(this).dialog("close");
+                        },
+                    }
+                });
+            };
+            var mindatef = (datediff(new Date(), new Date($('#datepickerf1').attr('min'))))+'d';
+            var maxdatef = (datediff(new Date(), new Date($('#datepickerf1').attr('max'))))+'d';
+
+            $("#datepickerf1").datepicker({
+                 dateFormat: 'yy-mm-dd',
+                 minDate: mindatef,
+                 maxDate: maxdatef,
+                 showOn: 'both',
+        //         buttonText: 'календарь',
+                  buttonImage: '/static/js/calendar.gif',
+                  buttonImageOnly: true,
+                 hideIfNoPrevNext: true,
+                 locale: {
+                    format: 'yy-mm-dd'
+                    },
+            });
+    }
+    function datediff(first, second) {
+        return parseInt((second - first) / (1000 * 60 * 60 * 24));
+        //return Math.round((second - first) / (1000 * 60 * 60 * 24));
+    }
+
+    if (document.readyState == 'loading') {
+        // ещё загружается, ждём события
+        document.addEventListener('DOMContentLoaded', work);
+    } else {
+        // DOM готов!
+        work();
+    }
+
+    function form1subm() {
+        //document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf21').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol').submit()
+    }
+
+    function form2subm() {
+        //document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf21').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol2').submit()
+    }
+    function changedate2() {
+        document.getElementById('datepickerf21').value = document.getElementById('datepickerf1').value;
+        document.getElementById('datepickerf1disp').value = document.getElementById('datepickerf1').value;
+    }
+
+</script>
+{% endaddtoblock %}
+{% addtoblock 'css' %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+<style>
+    input[type="date"]::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-ms-clear {
+        display: none;
+    }
+    #datepickerdiv1{
+        display:block;
+        float:left
+    }
+    #datepickerdiv2{
+        display:block;
+        float:left
+    }
+    #datepickerf1disp{
+        color:black;
+    }
+    #datepickerf2disp{
+        color:black;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:3px;
+    }
+</style>
+
+{% endaddtoblock %}
+
+{% placeholder "content" %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+        <a class="button-top" href="#" onclick="form2subm()">Обновить</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container">
+<h1>Режим быстрого удаления(конец года)-поклассам(с завтра от выставленной даты) </h1>
+
+    <form method="POST" id="formstol">{% csrf_token %} <input type="hidden" name="form1" value="1"></form>
+    <form method="POST" id="formstol2">{% csrf_token %} <input type="hidden" name="form2" value="1"><input type="hidden" name="datepicker" value="" id="datepickerf21"></form>
+
+    <div class="input-box">
+        <a style="float:left">С- </a>
+        <div id="datepickerdiv1" onclick="$('#datepickerf1').datepicker('show')">
+        <input type="date" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" disabled id="datepickerf1disp">
+        <input type="hidden" name="datepicker" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" form="formstol" onchange="form2subm()" readonly id="datepickerf1">
+        </div>
+    </div>
+    <table class="table-one">
+    <thead><tr><th>Класс</th><th>Отметка(стоит=поставить каникулы)</th></tr></thead>
+    <tbody>
+    {% for itsel2,itsel in selectitems.items %}
+    <tr>
+        <td>{{itsel}}</td>
+        <td class="checkbox">
+            <input type="hidden" name="chk{{itsel}}" value="False" form="formstol" />
+            <input type="checkbox" name="chk{{itsel}}" value="True" form="formstol" />
+        </td>
+    <tr>
+    {% endfor %}
+    <tr>
+        <td colspan="100%" height="20px"></td>
+    </tr>
+    <tr>
+        <td colspan="100%" align="right"><input type="submit" class="button" value="Отправить данные по галочкам" form="formstol">
+        </td>
+    </tr>
+
+    </tbody>
+    </table>
+
+</div>
+        <div id="click__modal" style="display:none;">
+            <div id="datpit-v"></div>
+            <a id="uch-v"></a><br/>
+        </div>
+
+{% endblock %}

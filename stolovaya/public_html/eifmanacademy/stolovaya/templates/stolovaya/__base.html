@@ -1,0 +1,32 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags contacts_tags %}
+
+{% block extrajs %}
+    <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEtxL0Tr0Z9gZNlriXyt3MFOMJc9L6hAA&sensor=true"></script>
+{% endblock %}
+
+{% block content %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}contacts/css/contacts.css"/>
+    {% endaddtoblock %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+                {% address_map %}
+            </div>
+			<div class="col-md-4 col-sm-4 contacts__address">
+				{% address %}
+			</div>
+			<div class="contacts__officials">
+				{% officials %}
+			</div>
+        </div>
+		<!--div style="text-align:center;">
+			<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc1BYLS-lOrLXrIRhtG2ifbWlhpLFFJufjFJu_TBgKsHFzfQg/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Загрузка...</iframe>
+		</div-->
+		{% placeholder 'content' %}
+	</div>
+
+{% endblock %}

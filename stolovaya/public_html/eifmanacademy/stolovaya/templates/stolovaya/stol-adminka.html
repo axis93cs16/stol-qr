@@ -1,0 +1,636 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags %}
+
+
+
+{% block content %}
+{% addtoblock 'js_end' %}
+<script>
+    //    window.onload = function(){
+    //        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+    //    };
+    function work() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+            var mindatef = (datediff(new Date(), new Date($('#datepickerf1').attr('min'))))+'d';
+            var maxdatef = (datediff(new Date(), new Date($('#datepickerf1').attr('max'))))+'d';
+
+            $("#datepickerf1").datepicker({
+                 dateFormat: 'yy-mm-dd',
+                 minDate: mindatef,
+                 maxDate: maxdatef,
+                 showOn: 'both',
+                 buttonText: 'календарь',
+                  buttonImage: '/static/js/calendar.gif',
+                  buttonImageOnly: true,
+                 hideIfNoPrevNext: true,
+                 locale: {
+                    format: 'yy-mm-dd'
+                    },
+            });
+
+    }
+
+    if (document.readyState == 'loading') {
+        // ещё загружается, ждём события
+        document.addEventListener('DOMContentLoaded', work);
+    } else {
+        // DOM готов!
+        work();
+    }
+
+    function datediff(first, second) {
+        return parseInt((second - first) / (1000 * 60 * 60 * 24));
+        //return Math.round((second - first) / (1000 * 60 * 60 * 24));
+    }
+
+    function form1subm() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol').submit()
+    }
+
+    function form2subm() {
+        document.getElementById('selitf1').value = document.getElementById('selitf2').value;
+        document.getElementById('datepickerf2').value = document.getElementById('datepickerf1').value;
+        document.getElementById('formstol2').submit()
+    }
+
+
+</script>
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/datepicker-ru.js"></script>
+<script>
+$(function() {
+    $(".button__click").on("click", function() {
+        var uch = $(this).data("uch");
+        var datpit = $(this).data("datpit");
+        var uchid = $(this).data("uchid");
+        var zavtrakid = '#zavtrak'+uchid;
+        savedatatobase(datpit,uchid);
+    });
+    $(".button__click2").on("click", function() {
+        var uch = $(this).data("uch");
+        var datpit = $(this).data("datpit");
+        var uchid = $(this).data("uchid");
+        var lgotaid = '#lgota'+uchid;
+        var lgota = $(lgotaid).val();
+        savedatatobase2(datpit,uchid,lgota);
+    });
+    $(".button__click3").on("click", function() {
+        var uch = $(this).data("uch");
+        var uchid = $(this).data("uchid");
+        var classnid = '#classn'+uchid;
+        var classn = $(classnid).val();
+        savedatatobase3(uchid,classn);
+    });
+    $(".button__click4").on("click", function() {
+//        var uch = $(this).data("uch");
+        var uchid = $(this).data("uchid");
+        var uchidname = '#fio'+uchid;
+        var uch = $(uchidname).val();
+//        alert(uch);
+        savedatatobase4(uchid,uch);
+    });
+    $(".button__click5").on("click", function() {
+        var uchid = $(this).data("uchid");
+        var intlname = '#internatl'+uchid;
+        var intl = $(intlname).val();
+        savedatatobase5(uchid,intl);
+    });
+    $(".button__click6").on("click", function() {
+        savedatatobase6();
+    });
+    $(".button__click9").on("click", function() {
+        var uchid = $(this).data("uchid");
+        var delflag = '#acceptdel'+uchid;
+        var delflagval = $(delflag).is(':checked');
+        if (delflagval == true) {
+            //var hrefofdel = "/admin/stolovaya/stolovaya/"+uchid+"/delete/?next";
+            //$('.input-box').append(hrefofdel);
+            //window.open(hrefofdel, '_blank', 'location=yes,height=570,width=890,scrollbars=yes,status=yes');
+            document.getElementById('uchidf9').value = uchid;
+            document.getElementById('selitf9').value = document.getElementById('selitf2').value;
+            document.getElementById('datepickerf9').value = document.getElementById('datepickerf1').value;
+            document.getElementById('formstol9').submit();
+        };
+    });
+
+});
+
+ function savedatatobase(datpit,uchid){
+            var zavtrakid='#zavtrak'+uchid
+            var obedid='#obed'+uchid
+            var poldnikid='#poldnik'+uchid
+            var ujin1id='#ujin1'+uchid
+            var ujin2id='#ujin2'+uchid
+            var obedkid='#obedk'+uchid
+            var obedkg1id='#obedkg1'+uchid
+            var obedkg2id='#obedkg2'+uchid
+            var obedkg3id='#obedkg3'+uchid
+            var internatpid='#internatp'+uchid
+            var zavtrakgid='#zavtrakg'+uchid
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_testf' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                    zavtrak:$(zavtrakid).is(':checked'),
+                    obed:$(obedid).is(':checked'),
+                    poldnik:$(poldnikid).is(':checked'),
+                    ujin1:$(ujin1id).is(':checked'),
+                    ujin2:$(ujin2id).is(':checked'),
+                    obedk:$(obedkid).is(':checked'),
+                    obedkg1:$(obedkg1id).is(':checked'),
+                    obedkg2:$(obedkg2id).is(':checked'),
+                    obedkg3:$(obedkg3id).is(':checked'),
+                    internatp:$(internatpid).is(':checked'),
+                    zavtrakg:$(zavtrakgid).is(':checked'),
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut'+uchid;
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+ function savedatatobase2(datpit,uchid,lgota){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test3' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                    lgota:lgota,
+                    saveflag:'ok',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut2'+uchid;
+                    var clid = '#classclass'+uchid;
+                    $(clid).attr('class', lgota);
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+ function savedatatobase3(uchid,classn){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test4' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    uchid:uchid,
+                    classn:classn,
+                    saveflag:'ok',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut3'+uchid;
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+
+ function savedatatobase4(uchid,uch){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test5' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    uchid:uchid,
+                    uchn:uch,
+                    saveflag:'ok',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut4'+uchid;
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+
+ function savedatatobase5(uchid,intl){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test6' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    uchid:uchid,
+                    intl:intl,
+                    saveflag:'ok',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut5'+uchid;
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+
+ function savedatatobase6(){
+            var clname=$("#classn_new").val()
+            var uchfio=$("#fio_new").val()
+            var lgotan=$("#lgota_new").val()
+            var intl=$("#internatl_new").val()
+            var datel=$("#datepickerf1").val()
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test7' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    clname:clname,
+                    uchfio:uchfio,
+                    lgotan:lgotan,
+                    intl:intl,
+                    datel:datel,
+                    saveflag:'ok',
+                },
+            success: function(data){
+                    console.log(data);
+                    var okiid = '#okbut6_new';
+                    $(okiid).html('ok');
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+
+ function saveformdata(datpit,uchid){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                    zavtrak:$('#zavtrak').is(':checked'),
+                    obed:$('#obed').is(':checked'),
+                    poldnik:$('#poldnik').is(':checked'),
+                    ujin1:$('#ujin1').is(':checked'),
+                    ujin2:$('#ujin2').is(':checked'),
+                    obedk:$('#obedk').is(':checked'),
+                    obedkg1:$('#obedkg1').is(':checked'),
+                    obedkg2:$('#obedkg2').is(':checked'),
+                    obedkg3:$('#obedkg3').is(':checked'),
+                    internatp:$('#internatp').is(':checked'),
+                },
+            success: function(data){
+                    console.log(data);
+                    $('#hiddeninput').html(data);
+                },
+            error: function(error){
+                console.log(error)
+            },
+            })
+    }
+ function getformdata(datpit,uchid){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'stolovaya:form_test2' %}",
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}',
+                    datpit:datpit,
+                    uchid:uchid,
+                },
+            success: function(data){
+                    console.log(data);
+                    if (data.zavtrak=="True") {$('#zavtrak').prop('checked', true)} else {$('#zavtrak').prop('checked', false)};
+                    if (data.obed=="True") {$('#obed').prop('checked', true)} else {$('#obed').prop('checked', false)};
+                    if (data.poldnik=="True") {$('#poldnik').prop('checked', true)} else {$('#poldnik').prop('checked', false)};
+                    if (data.ujin1=="True") {$('#ujin1').prop('checked', true)} else {$('#ujin1').prop('checked', false)};
+                    if (data.ujin2=="True") {$('#ujin2').prop('checked', true)} else {$('#ujin2').prop('checked', false)};
+                    if (data.obedk=="True") {$('#obedk').prop('checked', true)} else {$('#obedk').prop('checked', false)};
+                    if (data.obedkg1=="True") {$('#obedkg1').prop('checked', true)} else {$('#obedkg1').prop('checked', false)};
+                    if (data.obedkg2=="True") {$('#obedkg2').prop('checked', true)} else {$('#obedkg2').prop('checked', false)};
+                    if (data.obedkg3=="True") {$('#obedkg3').prop('checked', true)} else {$('#obedkg3').prop('checked', false)};
+                    if (data.internatp=="True") {$('#internatp').prop('checked', true)} else {$('#internatp').prop('checked', false)};
+                },
+            error: function(error){
+                console.log(error)
+                $('#hiddeninput').html(error);
+            },
+            });
+    }
+</script>
+<script>
+
+ function handleChange(checkbox) {
+    if(checkbox.checked == true){
+            $('.classclasstr').each(function(index){
+                $(this).children('.checkbox').children('input[type=checkbox]').prop('checked', true);
+            });
+    }else{
+            $('.classclasstr').each(function(index){
+                $(this).children('.checkbox').children('input[type=checkbox]').prop('checked', false);
+            });
+   };
+  // console.log('001');
+ }
+
+ function handleChange2(checkbox) {
+    if(checkbox.checked == true){
+            $('.classclasstr').each(function(index){
+                if (!($(this).hasClass('internat14') || $(this).hasClass('internat59'))){
+                    $(this).children('.checkbox').children('input[type=checkbox]').prop('checked', true);
+                    };
+            });
+    }else{
+            $('.classclasstr').each(function(index){
+                if (!($(this).hasClass('internat14') || $(this).hasClass('internat59'))){
+                    $(this).children('.checkbox').children('input[type=checkbox]').prop('checked', false);
+                    };
+            });
+   };
+  // console.log('001');
+ }
+</script>
+
+{% endaddtoblock %}
+{% addtoblock 'css' %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    input[type="date"]::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type="date"]::-ms-clear {
+        display: none;
+    }
+    #priems input[type="checkbox"]{
+        transform: scale(2);
+    }
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .divpit input[type="checkbox"]{
+        transform: scale(2);
+    }
+    #datepickerdiv1{
+        display:block;
+        float:left
+    }
+    #datepickerf1disp{
+        color:black;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:3px;
+    }
+
+</style>
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+{% endaddtoblock %}
+
+{% placeholder "content" %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+        <a class="button-top" href="#" onclick="form2subm()">Обновить</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container">
+<h1>Режим Администратора контингента</h1>
+{{alertmsg}}
+    <!--<form method="POST" id="formstol9">{% csrf_token %} <input type="hidden" name="form9" value="1"><input type="submit" name="selit" value="ok"></form>-->
+    <form method="POST" id="formstol">{% csrf_token %} <input type="hidden" name="form1" value="1"><input type="hidden" name="selit" value="" id="selitf1"></form>
+    <form method="POST" id="formstol2">{% csrf_token %} <input type="hidden" name="form2" value="1"><input type="hidden" name="datepicker" value="" id="datepickerf2"></form>
+    <form method="POST" id="formstol9">{% csrf_token %} <input type="hidden" name="form9" value="1">
+    <input type="hidden" name="datepicker" value="" id="datepickerf9">
+    <input type="hidden" name="selit" value="" id="selitf9">
+    <input type="hidden" name="uchid" value="" id="uchidf9"></form>
+    <div class="input-box">
+         <div id="datepickerdiv1" onclick="$('#datepickerf1').datepicker('show')">
+         <input type="date" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" disabled id="datepickerf1disp">
+         <input type="hidden" name="datepicker" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" form="formstol" onchange="form2subm()" id="datepickerf1" readonly >
+         </div>
+        <select name="selit" onchange="form2subm()" form="formstol2" id="selitf2">
+            {% for itsel2,itsel in selectitems.items %}
+            <option value="{{itsel}}" {% if selit == itsel %} selected="selected" {% endif %}>Класс {{itsel}}</option>
+            {% endfor %}
+        </select>
+
+        <select name="selitint" onchange="form2subm()" form="formstol2" id="selitintf2">
+            {% for itsel2,itsel in selectintitems.items %}
+            <option value="{{itsel}}" {% if selitint == itsel %} selected="selected" {% endif %}>Этаж интерната {{itsel}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <table class="table-one">
+        <th>Группа</th>
+        <th>Ученик</th>
+        <th>Льгота</th>
+        <th>Этаж Интерната</th>
+        <th>Режим питания</th>
+        <th>Не будет
+                all<input type="checkbox" name="chkall" form="formstol000" onchange='handleChange(this);'/>
+                reg<input type="checkbox" name="chkallwoint" form="formstol000" onchange='handleChange2(this);'/>
+        </th>
+        {% for obj in datamodel1 %}
+        <tr id="classclass{{obj.id}}" class="{{obj.typeofeda}} classclasstr">
+            <td>
+            <div class="divpit">
+            <select id="classn{{obj.id}}">
+            {% for uniqc in unique_class %}
+            <option value={{uniqc}} {% if uniqc == obj.classname %} selected=selected {% endif %}>{{uniqc}}</option>
+            {% endfor %}
+            </select>
+            </div>
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click3" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut3{{obj.id}}"></a>
+                        </div>
+                    </section>
+            </td>
+            <td>
+            <div class="divpit">
+            <input value="{{obj.fio}}" id="fio{{obj.id}}" />
+            </div>
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click4" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut4{{obj.id}}"></a>
+                        </div>
+                    </section>
+                    <div class="divpit"><input type="checkbox" id="acceptdel{{obj.id}}" value="True">подтвердить</input><input type="button" value="Удалить с Завтра" data-uchid="{{obj.id}}" class="button__click9"></div>
+            </td>
+
+            <td>
+            <div class="divpit">
+            <select id="lgota{{obj.id}}">
+            {% for unie in unique_eda  %}
+                <option value="{{unie}}" {% if obj.typeofeda == unie %} selected="selected" {% endif %} >{{unie}}</option>
+            {% endfor %}
+            </select>
+            </div>
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click2" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut2{{obj.id}}"></a>
+                        </div>
+                    </section>
+            </td>
+            <td>
+            <div class="divpit">
+                <select id="internatl{{obj.id}}">
+                {% for objes in unique_intl %}
+                    <option value={{objes}} {% if objes == obj.internat %} selected {% endif %}>{% trans objes %}</option>
+                {% endfor %}
+                </select>
+                </div>
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click5" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut5{{obj.id}}"></a>
+                        </div>
+                    </section>
+
+            </td>
+            <!-- Here starts the main contents pane -->
+            <td>
+                                        {% for objk, obje in obj.eda.items %}
+                    {% if objk == 'zavtrak' %} <div class="divpit">З=<input type="checkbox" id="zavtrak{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obed' %} <div class="divpit">О=<input type="checkbox" id="obed{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'poldnik' %} <div class="divpit">П=<input type="checkbox" id="poldnik{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'ujin1' %} <div class="divpit">У1=<input  type="checkbox" id="ujin1{{obj.id}}"{% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'ujin2' %} <div class="divpit">У2=<input type="checkbox" id="ujin2{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'zavtrakg' %} <div class="divpit">ЗЛ=<input type="checkbox" id="zavtrakg{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedk' %} <div class="divpit">КОМ=<input type="checkbox" id="obedk{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg1' %} <div class="divpit">ГОР1=<input type="checkbox" id="obedkg1{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg2' %} <div class="divpit">ГОР2=<input type="checkbox" id="obedkg2{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'obedkg3' %} <div class="divpit">ГОР3=<input type="checkbox" id="obedkg3{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    {% if objk == 'internatp' %} <div class="divpit">ИНТП=<input type="checkbox" id="internatp{{obj.id}}" {% if obje == 'True' %} checked {% endif %} /></div>{% endif %}
+                    
+                            {% endfor %}
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click" data-uch="{{obj.fio}}" data-datpit="{{datasek}}" data-uchid="{{obj.id}}">Изменить</button><a id="okbut{{obj.id}}"></a>
+                        </div>
+                    </section>
+            </td>
+            <!-- Here starts the main contents pane -->
+            <td class="checkbox"><input type="hidden" name="chk{{obj.id}}" value="False" form="formstol">
+                <input type="checkbox" {% if obj.chkflag %}checked="checked"{%endif%} name="chk{{obj.id}}" value="True" form="formstol" /></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="100%" height="20px"></td>
+        </tr>
+        <tr>
+            <td>
+            <div class="divpit">
+            <select id="classn_new">
+            {% for uniqc in unique_class %}
+            <option value={{uniqc}}>{{uniqc}}</option>
+            {% endfor %}
+            </select>
+            </div>
+            </td>
+            <td>
+            <div class="divpit">
+            ФИО
+            <input value="" id="fio_new" />
+            </div>
+            </td>
+            <td>
+            <div class="divpit">
+            <select id="lgota_new">
+            {% for unie in unique_eda  %}
+                <option value="{{unie}}" >{{unie}}</option>
+            {% endfor %}
+            </select>
+            </div>
+            </td>
+            <td>
+                <div class="divpit">
+                <select id="internatl_new">
+                {% for objes in unique_intl %}
+                    <option value={{objes}}>{% trans objes %}</option>
+                {% endfor %}
+                </select>
+                </div>
+            </td>
+            <td>    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click6 button" data-uch="new" data-datpit="{{datasek}}" data-uchid="new">Добавить нового ученика</button><a id="okbut6_new"></a>
+                        </div>
+                    </section>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="100%" align="right">ИТОГО: {{sumuch}}<input type="submit" class="button" value="Отправить отметки(не будет)" form="formstol">
+                <!--<input type="checkbox" value="1" name="delflag">-->
+            </td>
+        </tr>
+    </table>
+{%comment%}
+    {% for ohh in nextqqq %}
+    {{ohh.datapit}} -
+    {{ohh.uchid}} -
+    {{ohh.chkflag}}
+    {{ohh.datazapis}}
+    <br />
+    {% endfor %}
+{%endcomment%}
+{%comment%}
+    {%for datobj in datamodel1%}
+        {{datobj.classname}}-{{datobj.fio}}-{{datobj.typeofeda}}-{{datobj.chkflag}}<br/>
+    {%endfor%}
+{%endcomment%}
+</div>
+
+
+        <div id="click__modal" style="display:none;">
+            <div id="datpit-v"></div>
+            <a id="uch-v"></a><br/>
+            <a>Приемы пищи:(отметить где будет питаться)</a>
+            <table id="priems">
+            <th>Завтрак</th><th>Обед</th><th>Полдник</th><th>Ужин</th><th>Ужин2</th>
+            <tr><td><input type="checkbox" id="zavtrak"></td><td><input type="checkbox" id="obed"></td><td><input type="checkbox" id="poldnik"></td><td><input type="checkbox" id="ujin1"></td><td><input type="checkbox" id="ujin2"></td></tr>
+            </table>
+        </div>
+
+
+    <input type="hidden" value="" id="hiddeninput" />
+{% endblock %}

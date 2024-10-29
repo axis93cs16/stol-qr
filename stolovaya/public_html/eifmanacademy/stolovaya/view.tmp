@@ -1,0 +1,964 @@
+# coding=utf-8
+#from django.core.urlresolvers import reverse_lazy
+from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView, FormView
+#from contacts.forms import ContactsForm
+#from contacts.models import Feedback
+#from django.forms import ModelForm
+from django.template import loader
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from stolovaya.models import stolovaya as modelstol
+from stolovaya.models import stolovayainfodata, stolovayainfopit, stolovayapodacha
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.shortcuts import redirect, HttpResponse, render
+from django.db.models import Q
+from stolovaya.forms import NumberForm
+from django.http import JsonResponse
+#from copy import copy
+
+@login_required
+def AdminViewme(request): #EDIT-CLASSRUK
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['class-ed','stol-admin']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+    dateminmax = [0,1]
+    dateminmax[0]=datetime.now().strftime("%Y-%m-%d")
+    dateminmax[1]=(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
+
+
+    queryset = modelstol.objects.filter(medflag=False).order_by('classname','typeofeda','fio')
+#    datamodel = stolovayainfodata.objects.all()
+    #1
+    lgotaarrlist = queryset.values('typeofeda')
+    list_of_unique_eda = {}#[]
+    unique_eda = sorted(set( val for dic in lgotaarrlist for val in dic.values()))
+    for eda in unique_eda:
+        list_of_unique_eda.update({eda:0})
+    lgotaarr = list_of_unique_eda
+    #1
+
+    #2
+    lgotaarrlist2 = queryset.values('classname')
+    list_of_unique_class = {}#[]
+    unique_class = sorted(set( val for dic in lgotaarrlist2 for val in dic.values()))
+    idcl=0
+    for class2 in unique_class:
+        if str('stol-admin') in unique_groups:
+            list_of_unique_class.update({idcl:class2})#idcl:class2})
+            idcl+=1
+        else:
+            if str(class2) in unique_groups:
+                list_of_unique_class.update({idcl:class2})#idcl:class2})
+                idcl+=1
+    if idcl==0:
+        return redirect('/login/?next=%s' % request.path)
+#    selectitems = unique_class
+    selectitems2 = list_of_unique_class
+    #2
+    selit = selectitems2[0]
+    queryset1=[]
+    datasek = datetime.now().strftime("%Y-%m-%d")
+    if request.method == 'POST' and request.POST:
+        dicta = dict(request.POST)
+        if dicta.get('form2',0) !=0: #VIEWHIST
+            del dicta['form2']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            if dicta.get('datepicker', 0) != 0 or dicta.get('datepicker', 0) != '':
+                datasek = dicta.get('datepicker')[0]
+                del dicta['datepicker']
+            else:
+                datasek = datetime.now().strftime("%Y-%m-%d")
+
+
+        if dicta.get('form1',0) !=0: #SAVENEW!!!!
+            del dicta['form1']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('datepicker') != 0:
+                datdate = dicta.get('datepicker')
+                del dicta['datepicker']
+                datasek = datdate[0]
+            delflag1 = '0'
+            if dicta.get('delflag'):
+                delflag1 = str(dicta.get('delflag')[0])
+                del dicta['delflag']
+            delflag1 = 1
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            else:
+                selit = selectitems2[0]
+            datid = ''
+            datchk = ''
+            arrdata = []
+            for datid, datchk in dicta.items():
+                if datid != '':
+                    if len(datchk) > 1:
+                        arrdata += [(datid[3:],'True')]
+                    else:
+                        arrdata += [(datid[3:],'False')]
+            for objdi, objdc in arrdata:
+                if delflag1 == '1' or delflag1 == 1:
+                    stolovayainfodata.objects.filter(datapit=datdate[0],uchid_id=objdi).delete()
+                    stolovayainfodata(datapit=datdate[0], uchid_id=objdi, chkflag=objdc, datazapis=timezone.now()).save()
+    alertmsg=''
+#    for qrit in queryset:
+#        if qrit.classname == selit:
+#            queryset1.append(qrit)
+#    datamodel1 = []
+#    sumuch = 0
+#    datamodel = stolovayainfodata.objects.filter(datapit=datasek)
+#    for stolm in queryset :
+#        for datm in datamodel :
+#            if datm.uchid_id == stolm.id and str(selit) == stolm.classname:
+##                datm.typeofeda = stolm.typeofeda
+##                datm.fio = stolm.fio
+##                datm.classname = stolm.classname
+#                stolm.chkflag = datm.chkflag
+#                sumuch += 1
+#                if 1==1:
+#                    datamodel1.append(stolm)
+#        if sumuch == 0:
+#            if str(selit) == stolm.classname:
+#                stolm.chkflag = False
+#                datamodel1.append(stolm)
+    datamodel1 = []
+    sumuch = 0
+    datamodel = stolovayainfodata.objects.filter(datapit=datasek)
+    for stolm in queryset :
+        flagdata=0
+        for datm in datamodel :
+            if datm.uchid_id == stolm.id and str(selit) == stolm.classname:
+                flagdata=1
+#                datm.typeofeda = stolm.typeofeda
+#                datm.fio = stolm.fio
+#                datm.classname = stolm.classname
+                stolm.chkflag = datm.chkflag
+                if not (stolm.typeofeda == 'internat14' or stolm.typeofeda == 'internat59'):
+                    datamodel1.append(stolm)
+                    sumuch += 1
+                    break
+        if flagdata == 0:
+#        if sumuch == 0:
+            if str(selit) == stolm.classname:
+                stolm.chkflag = False
+                if not (stolm.typeofeda == 'internat14' or stolm.typeofeda == 'internat59'):
+                    datamodel1.append(stolm)
+                    sumuch += 1
+
+
+    context = {'queryset':queryset1,  'selectitems':selectitems2, 'selit':selit, 'alertmsg':alertmsg, 'dateminmax':dateminmax, 'datasek':datasek, 'datamodel1':datamodel1, 'sumuch':sumuch}
+    return render(request, 'stolovaya/stol-edit.html', context)
+
+@login_required
+def AdminViewmeint(request): #EDIT-INT
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['int-ed','stol-admin']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+    dateminmax = [0,1]
+    dateminmax[0]=datetime.now().strftime("%Y-%m-%d")
+    dateminmax[1]=(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
+    
+
+    queryset = modelstol.objects.filter(Q(typeofeda='internat14') | Q(typeofeda='internat59'), medflag=False).order_by('classname','typeofeda','fio')
+#    datamodel = stolovayainfodata.objects.all()
+    #1
+    lgotaarrlist = queryset.values('typeofeda')
+    list_of_unique_eda = {}#[]
+    unique_eda = sorted(set( val for dic in lgotaarrlist for val in dic.values()))
+    for eda in unique_eda:
+        list_of_unique_eda.update({eda:0})
+    lgotaarr = list_of_unique_eda
+    #1
+
+    #2
+    lgotaarrlist2 = queryset.values('classname')
+    list_of_unique_class = {}#[]
+    unique_class = sorted(set( val for dic in lgotaarrlist2 for val in dic.values()))
+    idcl=0
+    list_of_unique_class.update({idcl:'Все'})
+    idcl=1
+    for class2 in unique_class:
+        if str('stol-admin') in unique_groups:
+            list_of_unique_class.update({idcl:class2})#idcl:class2})
+            idcl+=1
+        else:
+            if str(class2) in unique_groups:
+                list_of_unique_class.update({idcl:class2})#idcl:class2})
+                idcl+=1
+
+#    selectitems = unique_class
+    selectitems2 = list_of_unique_class
+    #2
+    internatarr = modelstol.objects.filter(~Q(internat='normal')).values('internat')
+    list_of_unique_int = {}#[]
+    unique_int = sorted(set( val for dic in internatarr for val in dic.values()))
+    list_of_unique_int.update({'internat':'Все'})
+    idcl2=0
+    for inter in unique_int:
+        if str('stol-admin') in unique_groups:
+            list_of_unique_int.update({idcl2:inter[:1]})
+            idcl2+=1
+        else:
+            if str(inter) in unique_groups:
+                list_of_unique_int.update({idcl2:inter[:1]})
+                idcl2+=1
+
+    selectintitems=list_of_unique_int
+
+
+    selitint = selectintitems[0]
+    selit = selectitems2[0]
+    queryset1=[]
+    datasek = datetime.now().strftime("%Y-%m-%d")
+    alertmsg=''
+    if request.method == 'POST' and request.POST:
+        dicta = dict(request.POST)
+        if dicta.get('form2',0) !=0: #VIEWHIST
+            del dicta['form2']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            if dicta.get('selitint', 0) != 0:
+                selitint = dicta.get('selitint')[0]
+                del dicta['selitint']
+            if dicta.get('datepicker', 0) != 0 or dicta.get('datepicker', 0) != '':
+                datasek = dicta.get('datepicker')[0]
+                del dicta['datepicker']
+            else:
+                datasek = datetime.now().strftime("%Y-%m-%d")
+#        if dicta.get('form9',0) !=0: #tempfunc
+#            del dicta['form9']
+#            del dicta['csrfmiddlewaretoken']
+#            from django.contrib.auth.models import Group, User
+#            for itofcl in selectitems2.values():
+#                if itofcl == 'Все':
+#                    continue
+#                user = User.objects.create_user(username=(itofcl+'-ruk'), password=("!"+itofcl+'!d'))
+#                user = User.objects.get(username=(itofcl+'-ruk'))
+#                new_group, created = Group.objects.get_or_create(name=itofcl)
+#                my_group = Group.objects.get(name='class-ed')
+#                my_group.user_set.add(user)
+
+
+        if dicta.get('form1',0) !=0: #SAVENEW!!!!
+            del dicta['form1']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('datepicker') != 0:
+                datdate = dicta.get('datepicker')
+                del dicta['datepicker']
+                datasek = datdate[0]
+            delflag1 = '0'
+            if dicta.get('delflag'):
+                delflag1 = str(dicta.get('delflag')[0])
+                del dicta['delflag']
+            delflag1 = 1
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            else:
+                selit = selectitems2[0]
+            datid = ''
+            datchk = ''
+            arrdata = []
+            for datid, datchk in dicta.items():
+                if datid != '':
+                    if len(datchk) > 1:
+                        arrdata += [(datid[3:],'True')]
+                    else:
+                        arrdata += [(datid[3:],'False')]
+            for objdi, objdc in arrdata:
+                if delflag1 == '1' or delflag1 == 1:
+                    stolovayainfodata.objects.filter(datapit=datdate[0],uchid_id=objdi).delete()
+                    stolovayainfodata(datapit=datdate[0], uchid_id=objdi, chkflag=objdc, datazapis=timezone.now()).save()
+#    for qrit in queryset:
+#        if qrit.classname == selit:
+#            queryset1.append(qrit)
+    datamodel1 = []
+    sumuch = 0
+    if selitint != 'Все':
+        queryset = modelstol.objects.filter(Q(typeofeda='internat14') | Q(typeofeda='internat59'),internat=(selitint+'-level'), medflag=False).order_by('classname','typeofeda','fio')
+    datamodelas = stolovayainfodata.objects.filter(datapit=datasek)
+    for stolm in queryset :
+        flagdata=0
+        for datm in datamodelas :
+            if str(selit) == 'Все':
+                if datm.uchid_id == stolm.id:
+                    flagdata=1
+                    stolm.chkflag = datm.chkflag
+                    sumuch += 1
+                    datamodel1.append(stolm)
+                    break
+            else:
+                if datm.uchid_id == stolm.id and str(selit) == stolm.classname:
+                    flagdata=1
+                    stolm.chkflag = datm.chkflag
+                    sumuch += 1
+                    datamodel1.append(stolm)
+                    break
+        if str(selit) == 'Все':
+            if flagdata == 0:
+                stolm.chkflag = False
+                sumuch += 1
+                datamodel1.append(stolm)
+        else:
+            if flagdata == 0 and str(selit) == stolm.classname:
+                stolm.chkflag = False
+                sumuch += 1
+                datamodel1.append(stolm)
+
+    context = {'queryset':queryset,  'selectitems':selectitems2, 'selit':selit, 'alertmsg':alertmsg, 'dateminmax':dateminmax, 'datasek':datasek, 'datamodel1':datamodel1, 'sumuch':sumuch, 'selectintitems':selectintitems, 'selitint':selitint}
+    return render(request, 'stolovaya/stol-int-edit.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+def AdminViewstol(request): #VIEW
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['stol-view','stol-admin']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+
+    stolovayamodel = modelstol.objects.all().order_by('classname','typeofeda','fio')#modelstol.objects.filter(classname=selit)
+#    lgotaarr = Object()
+#    setattr(lgotaarr, 'toe', '')
+#    setattr(lgotaarr, 'val', '')
+#    insa = 0
+#    insb = 0
+#2
+    lgotaarrlist2 = stolovayamodel.values('classname')
+    list_of_unique_class = {}#[]
+    unique_class = sorted(set( val for dic in lgotaarrlist2 for val in dic.values()))
+    unique_class1=unique_class.copy()
+    unique_class2=unique_class.copy()
+    idcl=0
+    for class2 in unique_class1:
+        list_of_unique_class.update({idcl:class2})#idcl:class2})
+        idcl+=1
+    selectitems = unique_class1
+    selectitems2 = list_of_unique_class
+    #2
+    #3
+    list_of_unique_class2 = {}
+    for class3 in unique_class2:
+        list_of_unique_class2.update({class3:0})
+    sumuchall = list_of_unique_class2.copy()
+    #3
+    #1
+    lgotaarrlist = stolovayamodel.values('typeofeda')
+    list_of_unique_eda = {}#[]
+    list_of_unique_eda_class = {}#[]
+    unique_eda = sorted(set( val for dic in lgotaarrlist for val in dic.values()))
+
+    list_of_unique_eda_class={}
+    list_of_unique_eda_med={}
+    for eda in unique_eda:
+        list_of_unique_eda.update({eda:0})
+#    list_of_unique_eda.update({'medcenter':0})
+
+    for class41 in unique_class:
+        list_of_unique_eda_class[class41] = {}
+        for eda in unique_eda:
+            list_of_unique_eda_class[class41].update({eda:0})
+#        list_of_unique_eda_class[class41].update({'medcenter':0})
+
+#            list_of_unique_eda_class.setdefault(eda,(}).update({class41:0})
+    lgotaarr = list_of_unique_eda.copy()
+    lgotaarrvs = list_of_unique_eda.copy()
+    lgotaarrvs2 = list_of_unique_eda_class.copy()
+    lgotaarrvsmed =list_of_unique_eda.copy()
+    #1
+
+    
+    #lgotaarrvs2
+
+    if request.method == 'POST' and request.POST:
+        dicta = dict(request.POST)
+        del dicta['csrfmiddlewaretoken']
+#        if datepicker
+        if ((dicta.get('datepicker', 0) == 0) or (dicta.get('datepicker', 0) is '') or (dicta.get('datepicker', 0) is None) or (dicta.get('datepicker', 0) == '')):
+            datasek = datetime.now().strftime("%Y-%m-%d")
+        else:
+            datasek = dicta.get('datepicker')[0]
+        if dicta.get('selit', 0) != 0:
+            if dicta.get('selit')[0] != '':
+                selit = dicta.get('selit')[0]
+            else:
+                selit = selectitems2[0]
+        else:
+            selit = selectitems2[0]
+    else:
+        datasek = datetime.now().strftime("%Y-%m-%d")
+        selit = selectitems2[0]
+    datamodel = stolovayainfodata.objects.filter(datapit=datasek).order_by('datazapis')
+    datamodel.lgota = ''
+    sumuch = 0
+    sumuchvs = 0
+    datamodel1 = []
+    datamodel2 = []
+    dataret = []
+    lgotaarrvseda = {'zavtrak':0,'obed':0,'poldnik':0,'ujin1':0,'ujin2':0}
+    lgotaarrvsedamed = {'zavtrak':0,'obed':0,'poldnik':0,'ujin1':0,'ujin2':0}
+
+    for datm in stolovayamodel :
+        datm.eda = {}
+        flagdata=0
+        datm.datapit = datetime.strptime(datasek, "%Y-%m-%d").date()
+        datm.lgota = datm.typeofeda
+        for stolm in datamodel : #отмеченные дети
+            if datm.id == stolm.uchid_id :
+                flagdata=1 #ставим флаг что ребенок есть в базе отмеченных
+                datm.datapit = stolm.datapit
+                datm.datazapis = stolm.datazapis
+                if stolm.chkflag == 'False' or stolm.chkflag == False:
+                    sumuchvs += 1
+                    datm.eda = func_read(stolm.uchid_id, datasek, datm.lgota)
+                    datamodel2.append(datm)
+                    if str(selit) == datm.classname and datm.id == stolm.uchid_id: #таблица фамилии
+                        sumuch += 1
+                        lgotaarr[datm.lgota] += 1
+                        datamodel1.append(datm)
+                    if str(selit) == 'med' and datm.id == stolm.uchid_id and datm.medflag == True: #таблица фамилии МЕДЦЕНТРА
+                        sumuch += 1
+                        lgotaarr[datm.lgota] += 1
+                        datamodel1.append(datm)
+                    if datm.medflag == True:
+                        lgotaarrvsmed[datm.lgota] += 1
+                        for keyeda,itemeda in datm.eda.items(): #по приемам пищи обед ужин итд
+                            if itemeda == 'True':
+                                lgotaarrvsedamed[keyeda] +=1
+                        break
+                    lgotaarrvs[datm.lgota] += 1
+                    for keyeda,itemeda in datm.eda.items(): #по приемам пищи обед ужин итд
+                        if itemeda == 'True':
+                            lgotaarrvseda[keyeda] +=1
+                    for itemclass in selectitems:
+                        if str(itemclass) == str(datm.classname) and datm.id == stolm.uchid_id:
+                            lgotaarrvs2[itemclass][datm.lgota] += 1
+                            sumuchall[itemclass] += 1
+                    break
+        if flagdata==0 : #неотмеченные дети проверяем флаг что нет в базе
+            lgotaarrvs[datm.lgota] += 1
+            sumuchvs += 1
+            datm.datapit = datasek
+            datm.eda = func_read(datm.id, datasek, datm.lgota)
+            datamodel2.append(datm)
+            if str(selit) == 'med' and datm.medflag == True: #таблица фамилии МЕДЦЕНТРА
+                datamodel1.append(datm)
+                sumuch += 1
+                lgotaarr[datm.lgota] += 1
+            if str(selit) == datm.classname and str(selit): #таблица фамилии
+                datamodel1.append(datm)
+                sumuch += 1
+                lgotaarr[datm.lgota] += 1
+            if datm.medflag == True:
+                lgotaarrvsmed[datm.lgota] += 1
+                for keyeda,itemeda in datm.eda.items(): #по приемам пищи обед ужин итд
+                    if itemeda == 'True':
+                        lgotaarrvsedamed[keyeda] +=1
+                break
+            for keyeda,itemeda in datm.eda.items(): #по приемам пищи обед ужин итд
+                if itemeda == 'True':
+                    lgotaarrvseda[keyeda] +=1
+            for itemclass in selectitems:
+                if str(itemclass) == str(datm.classname):
+                    lgotaarrvs2[itemclass][datm.lgota] += 1
+                    sumuchall[itemclass] += 1
+
+
+    #datamodel3 = ListAsQuerySet(datamodel2)
+    context = {'nextqqq':datamodel1, 'nextartext':sumuch, 'lgotaarr':lgotaarr, 'nextartext2':sumuchvs, 'lgotaarr2':lgotaarrvs, 'datasek':datasek, 'selectitems':selectitems, 'selit':selit ,'sumuchall':sumuchall, 'lgotaarrvs2':lgotaarrvs2 , 'selectitems2':selectitems, 'lgotaarrvseda':lgotaarrvseda, 'lgotaarrvsmed':lgotaarrvsmed, 'lgotaarrvsedamed':lgotaarrvsedamed, 'datamodel2':datamodel2}
+    return render(request, 'stolovaya/stol-view.html', context)
+
+@login_required
+def form_test(request, *args, **kwargs): #Обработчк от модальных окон СОХРАНИТЬ!
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['stol-view','stol-admin','int-ed', 'class-ed']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+    #конец проверки доступа
+    data = {}
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if is_ajax:
+        if request.method == 'POST' and request.POST:
+            dicta = dict(request.POST)
+            data['uchid'] = dicta.get('uchid')[0]
+            data['datpit'] = dicta.get('datpit')[0]
+            data['zavtrak'] = dicta.get('zavtrak')[0].lower().capitalize()
+            data['obed'] = dicta.get('obed')[0].lower().capitalize()
+            data['poldnik'] = dicta.get('poldnik')[0].lower().capitalize()
+            data['ujin1'] = dicta.get('ujin1')[0].lower().capitalize()
+            data['ujin2'] = dicta.get('ujin2')[0].lower().capitalize()
+            stolovayainfopit.objects.filter(datapit=data['datpit'], uchid_id=data['uchid']).delete()
+            stolovayainfopit(datapit=data['datpit'], uchid_id=data['uchid'], zavtrak=data['zavtrak'], obed=data['obed'], poldnik=data['poldnik'], ujin1=data['ujin1'], ujin2=data['ujin2'], datapittime=datetime.now()).save()
+            data['success'] = 'ok'
+    context = {'data':data}
+    return JsonResponse(data)
+
+@login_required
+def form_test2(request, *args, **kwargs): #Обработчк от модальных окон ПРОЧИТАТЬ!
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['stol-view','stol-admin','int-ed', 'class-ed']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+    #конец проверки доступа
+    data = {}
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+#    data['uchid'] = '1'
+#    data['datpit'] = '2022-12-06'
+#    modeldatapit = stolovayainfopit.objects.filter(datapit=data['datpit'], uchid_id=data['uchid'])
+#    data['count'] = modeldatapit.count()
+#    data['z'] = str(modeldatapit.values_list())
+#    data['k'] = str(modeldatapit.values())
+#    data['zav'] = next(x.zavtrak for x in modeldatapit)
+#    modeldatapit = stolovayainfopit.objects.filter(datapit=data['datpit'], uchid_id=data['uchid'])
+#    if modeldatapit.count() > 0 :
+#        for xobj in modeldatapit:
+#            data['zavtrak'] = str(xobj.zavtrak).lower().capitalize()
+#            data['obed'] = str(xobj.obed).lower().capitalize()
+#            data['poldnik'] = str(xobj.poldnik).lower().capitalize()
+#            data['ujin1'] = str(xobj.ujin1).lower().capitalize()
+#            data['ujin2'] = str(xobj.ujin2).lower().capitalize()
+#            break
+    if is_ajax:
+        if request.method == 'POST' and request.POST:
+            dicta = dict(request.POST)
+            data['uchid'] = dicta.get('uchid')[0]
+            data['datpit'] = dicta.get('datpit')[0]
+            #modelstol1 = modelstol.objects.filter(Q(typeofeda='internat14') | Q(typeofeda='internat59')).order_by('classname','typeofeda','fio')
+            modeldatapit = stolovayainfopit.objects.filter(datapit=data['datpit'], uchid_id=data['uchid'])
+#            for objm1 in modelstol1:
+#                for objpit1 in modeldatapit:
+            if modeldatapit.count() > 0 :
+                for xobj in modeldatapit:
+                    data['zavtrak'] = str(xobj.zavtrak).lower().capitalize()
+                    data['obed'] = str(xobj.obed).lower().capitalize()
+                    data['poldnik'] = str(xobj.poldnik).lower().capitalize()
+                    data['ujin1'] = str(xobj.ujin1).lower().capitalize()
+                    data['ujin2'] = str(xobj.ujin2).lower().capitalize()
+                    break
+            else:
+                data['zavtrak'] = "true".lower().capitalize()
+                data['obed'] = "true".lower().capitalize()
+                data['poldnik'] = "true".lower().capitalize()
+                data['ujin1'] = "true".lower().capitalize()
+                data['ujin2'] = "true".lower().capitalize()
+    context = {'data':data}
+    return JsonResponse(data)
+
+
+#@login_required
+def func_read(fuchid, fdatpit, flgota, classname='103A'): #Функция ПРОЧИТАТЬ приемы пищи!
+    data = {}
+#    modelstol5 = modelstol.objects.filter(Q(typeofeda='normal') | Q(typeofeda='kompleks')).order_by('classname','typeofeda','fio')
+    modeldatapit = stolovayainfopit.objects.filter(uchid_id=fuchid).order_by('datapit')
+    from django.contrib.sites.models import Site
+    timestolmodel = stolovayapodacha.objects.filter(site=Site.objects.get_current())[:1].get()
+    zzok=0
+    zpok=0
+    zook=0
+    zu1k=0
+    zu2k=0
+    medflag = str(modelstol.objects.filter(id=fuchid).values_list('medflag')[:1].get()[0])
+    classname = str(modelstol.objects.filter(id=fuchid).values_list('classname')[:1].get()[0])
+    if modeldatapit.exists():
+        tmpfdatpit = datetime.strptime(fdatpit,'%Y-%m-%d').date()
+        zaglushka = datetime(2020, 1, 1 ,1 ,1 ,1, 1).date()
+        tmpfdatpittime2 = datetime.strptime(fdatpit,'%Y-%m-%d')
+#        tmpdatpit = datetime(2020, 1, 1 ,1 ,1 ,1, 1).date()
+#        tmpfdatpittime = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+#        tmpftimepit = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpdatpit = datetime(2020, 1, 1 ,1 ,1 ,1, 1).date()
+        tmpfdatpittime = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpftimepitz = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpftimepito = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpftimepitp = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpftimepitu1 = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        tmpftimepitu2 = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+#        data['timez']=''
+        correctirovka = datetime(2020, 1, 1 ,1 ,1 ,1, 1)
+        correctirovka2 = correctirovka
+        itoffor = {}
+        itter = 0
+        if ((medflag is 'True') or (flgota in {'internat14','internat59'})):
+#        if 1==1 :
+            for xobj in modeldatapit:
+                itoffor[itter] = xobj
+
+                if xobj.datapit >= tmpdatpit:
+                    tmpdatpit = xobj.datapit
+                    if tmpfdatpit == xobj.datapit:
+                        if xobj.datapittime.timestamp() >= tmpfdatpittime.timestamp():
+                            tmpfdatpittime = xobj.datapittime
+
+                            #zavtrak time test
+                            if xobj.datapittime.timestamp() <= tmpfdatpittime2.replace(hour=int(timestolmodel.zavtrak.hour), minute=int(timestolmodel.zavtrak.minute)).timestamp() or isinstance(xobj.forceflagz, datetime) :
+                                data['zavtrak'] = str(xobj.zavtrak).lower().capitalize()
+                                zzok=1
+                                if isinstance(xobj.forceflagz, datetime):
+                                    data['correctirovkaz'] = xobj.forceflagz
+                                    if xobj.forceflagz.timestamp() > correctirovka.timestamp() :
+                                        correctirovka = xobj.forceflagz
+                            elif zzok==0:
+                                data['zavtrak'] = "True".lower().capitalize()
+
+                            #obed time test
+                            if xobj.datapittime.timestamp() <= tmpfdatpittime2.replace(hour=int(timestolmodel.obed.hour), minute=int(timestolmodel.obed.minute)).timestamp() or isinstance(xobj.forceflago, datetime) :
+                                data['obed'] = str(xobj.obed).lower().capitalize()
+                                zook=1
+                                if isinstance(xobj.forceflago, datetime):
+                                    data['correctirovkao'] = xobj.forceflago
+                                    if xobj.forceflago.timestamp() > correctirovka.timestamp() :
+                                        correctirovka = xobj.forceflago
+                            elif zook==0:
+                                data['obed'] = "True".lower().capitalize()
+
+                            #poldnik time test
+                            if xobj.datapittime.timestamp() <= tmpfdatpittime2.replace(hour=int(timestolmodel.poldnik.hour), minute=int(timestolmodel.poldnik.minute)).timestamp() or isinstance(xobj.forceflagp, datetime) :
+                                data['poldnik'] = str(xobj.poldnik).lower().capitalize()
+                                zpok=1
+                                if isinstance(xobj.forceflagp, datetime):
+                                    data['correctirovkap'] = xobj.forceflagp
+                                    if xobj.forceflagp.timestamp() > correctirovka.timestamp() :
+                                        correctirovka = xobj.forceflagp
+                            elif zpok==0:
+                                data['poldnik'] = "True".lower().capitalize()
+
+                            #ujin1 time test
+                            if xobj.datapittime.timestamp() <= tmpfdatpittime2.replace(hour=int(timestolmodel.ujin1.hour), minute=int(timestolmodel.ujin1.minute)).timestamp() or isinstance(xobj.forceflagu1, datetime) :
+                                data['ujin1'] = str(xobj.ujin1).lower().capitalize()
+                                zu1k=1
+                                if isinstance(xobj.forceflagu1, datetime):
+                                    data['correctirovkau1'] = xobj.forceflagu1
+                                    if xobj.forceflagu1.timestamp() > correctirovka.timestamp() :
+                                        correctirovka = xobj.forceflagu1
+                            elif zu1k==0:
+                                data['ujin1'] = "True".lower().capitalize()
+
+                            #ujin2 time test
+                            if xobj.datapittime.timestamp() <= tmpfdatpittime2.replace(hour=int(timestolmodel.ujin2.hour), minute=int(timestolmodel.ujin2.minute)).timestamp() or isinstance(xobj.forceflagu2, datetime) :
+                                data['ujin2'] = str(xobj.ujin2).lower().capitalize()
+                                zu2k=1
+                                if isinstance(xobj.forceflagu2, datetime):
+                                    data['correctirovkau2'] = xobj.forceflagu2
+                                    if xobj.forceflagu2.timestamp() > correctirovka.timestamp() :
+                                        correctirovka = xobj.forceflagu2
+                            elif zu2k==0:
+                                data['ujin2'] = "True".lower().capitalize()
+
+                if zzok + zook + zpok + zu1k + zu2k > 0:
+                    data['datapit'] = xobj.datapit
+                    data['datapittime'] = xobj.datapittime
+                    correctirovka = correctirovka2
+                if correctirovka.timestamp() > correctirovka2.timestamp():
+                    data['correctirovka'] = correctirovka
+                itter += 1
+
+#    if ((flgota == 'normal' or flgota=='kompleks') and (medflag == 'False')):
+#        if 'datapit' in data: del data['datapit']
+#        if 'datapittime' in data: del data['datapittime']
+#        if 'zavtrak' in data: del data['zavtrak']
+#        if 'obed' in data: del data['obed']
+#        if 'poldnik' in data: del data['poldnik']
+#        if 'ujin1' in data: del data['ujin1']
+#        if 'ujin2' in data: del data['ujin2']
+    if ((flgota == 'internat14' or flgota == 'internat59') and ((zzok + zook + zpok + zu1k + zu2k) == 0)):
+        data['zavtrak'] = "true".lower().capitalize()
+        data['obed'] = "true".lower().capitalize()
+        data['poldnik'] = "true".lower().capitalize()
+        data['ujin1'] = "true".lower().capitalize()
+        data['ujin2'] = "true".lower().capitalize()
+    if ((flgota == 'lgota14') and ((zzok + zook + zpok + zu1k + zu2k) == 0)):
+         data['zavtrak'] = "true".lower().capitalize()
+    if ((flgota == 'lgota14' or flgota == 'lgota59') and ((zzok + zook + zpok + zu1k + zu2k) == 0)):
+        data['obed'] = "true".lower().capitalize()
+#    if ((flgota == 'normal' or flgota == 'kompleks') and ((zzok + zook + zpok + zu1k + zu2k) == 0) and (classname in {'103A','103B','104A','104B'})):
+#        data['zavtrak'] = "true".lower().capitalize()
+    if ((flgota == 'kompleks') and ((zzok + zook + zpok + zu1k + zu2k) == 0)):
+        data['obed'] = "true".lower().capitalize()
+
+    return data
+
+
+
+#def form_test(request, *args, **kwargs):
+#    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+#    form = NumberForm()
+#    data = {}
+#    if is_ajax:
+#        form = NumberForm(request.POST)
+#        if form.is_valid():
+#            data['zavtrak'] = form.cleaned_data.get('zavtrak')
+#            data['obed'] = form.cleaned_data.get('obed')
+#            data['status'] = 'ok'
+#            new_dataform = dataset(
+#                zavtrak=data['zavtrak'],
+#                obed = data['obed']
+#            )
+#            new_dataform.save()
+#            return JsonResponse(data)
+#        else:
+#            data['status'] = 'error'
+#            return JsonResponse(data)
+#    context = {
+#        'form':form
+#    }
+#    return render(request, 'stolovaya/home.html', context)
+
+
+
+@login_required
+def AdminViewmemed(request): #EditMED
+    if not request.user.groups.values_list('name',flat = True):
+        return redirect('/login/?next=%s' % request.path)
+    else:
+        flagen=0
+        avilgr=['med-ed','stol-admin']
+        unique_groups = set( val for dic in request.user.groups.all().values('name') for val in dic.values())
+        for i in avilgr:
+            for j in unique_groups:
+                if str(i)==str(j):
+                    flagen=1
+                    break
+        if flagen==0 :
+            return redirect('/login/?next=%s' % request.path)
+    dateminmax = [0,1]
+    dateminmax[0]=datetime.now().strftime("%Y-%m-%d")
+    dateminmax[1]=(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
+
+
+    queryset = modelstol.objects.filter(medflag=True).order_by('classname','typeofeda','fio')
+
+    #1
+    lgotaarrlist = queryset.values('typeofeda')
+    list_of_unique_eda = {}#[]
+    unique_eda = sorted(set( val for dic in lgotaarrlist for val in dic.values()))
+    for eda in unique_eda:
+        list_of_unique_eda.update({eda:0})
+    lgotaarr = list_of_unique_eda
+    #1
+
+    #2
+    lgotaarrlist2 = queryset.values('classname')
+    list_of_unique_class = {}#[]
+    unique_class = sorted(set( val for dic in lgotaarrlist2 for val in dic.values()))
+    idcl=0
+    list_of_unique_class.update({idcl:'Все'})
+    idcl=1
+    for class2 in unique_class:
+        if str('stol-admin') in unique_groups:
+            list_of_unique_class.update({idcl:class2})#idcl:class2})
+            idcl+=1
+        else:
+            if str(class2) in unique_groups:
+                list_of_unique_class.update({idcl:class2})#idcl:class2})
+                idcl+=1
+
+#    selectitems = unique_class
+    selectitems2 = list_of_unique_class
+    #2
+    selit = selectitems2[0]
+    queryset1=[]
+    datasek = datetime.now().strftime("%Y-%m-%d")
+    if request.method == 'POST' and request.POST:
+        dicta = dict(request.POST)
+        if dicta.get('form2',0) !=0: #VIEWHIST
+            del dicta['form2']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            if dicta.get('datepicker', 0) != 0 or dicta.get('datepicker', 0) != '':
+                datasek = dicta.get('datepicker')[0]
+                del dicta['datepicker']
+            else:
+                datasek = datetime.now().strftime("%Y-%m-%d")
+
+
+        if dicta.get('form1',0) !=0: #SAVENEW!!!!
+            del dicta['form1']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('datepicker') != 0:
+                datdate = dicta.get('datepicker')
+                del dicta['datepicker']
+                datasek = datdate[0]
+            delflag1 = '0'
+            if dicta.get('delflag'):
+                delflag1 = str(dicta.get('delflag')[0])
+                del dicta['delflag']
+            delflag1 = 1
+            if dicta.get('selit', 0) != 0:
+                selit = dicta.get('selit')[0]
+                del dicta['selit']
+            else:
+                selit = selectitems2[0]
+            datid = ''
+            datchk = ''
+            arrdata = []
+            for datid, datchk in dicta.items():
+                if datid != '':
+                    if len(datchk) > 1:
+                        arrdata += [(datid[3:],'True')]
+                    else:
+                        arrdata += [(datid[3:],'False')]
+            for objdi, objdc in arrdata:
+                if delflag1 == '1' or delflag1 == 1:
+                    stolovayainfodata.objects.filter(datapit=datdate[0],uchid_id=objdi).delete()
+                    stolovayainfodata(datapit=datdate[0], uchid_id=objdi, chkflag=objdc, datazapis=timezone.now()).save()
+        if dicta.get('form3',0) != 0: #Delete from medcenter
+            del dicta['form3']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('datepicker') != 0:
+                datdate = dicta.get('datepicker')
+                del dicta['datepicker']
+                datasek = datdate[0]
+            delflag1 = '0'
+            if dicta.get('delflag'):
+                delflag1 = str(dicta.get('delflag')[0])
+                del dicta['delflag']
+            delflag1 = 1
+            datid = ''
+            datchk = ''
+            arrdata = []
+            for datid, datchk in dicta.items():
+                if datid != '':
+                    if len(datchk) > 1:
+                        arrdata += [(datid[4:],'True')]
+                        modelstol.objects.filter(medflag=True, id=datid[4:]).update(medflag=False)
+                        stolovayainfodata(datapit=datdate[0],uchid_id=datid[4:], chkflag='False', datazapis=timezone.now()).save()
+                        stolovayainfopit(datapit=datdate[0], uchid_id=datid[4:], zavtrak='True', obed='True', poldnik='True', ujin1='True', ujin2='True', datapittime=datetime.now()).save()
+                        #stolovayainfodata.objects.filter(uchid_id=objdi).delete()
+                    else:
+                        arrdata += [(datid[4:],'False')]
+        if dicta.get('form4',0) != 0: #Add to medcenter
+            del dicta['form4']
+            del dicta['csrfmiddlewaretoken']
+            if dicta.get('datepicker') != 0:
+                datdate = dicta.get('datepicker')
+                del dicta['datepicker']
+                datasek = datdate[0]
+            delflag1 = '0'
+            if dicta.get('delflag'):
+                delflag1 = str(dicta.get('delflag')[0])
+                del dicta['delflag']
+            delflag1 = 1
+            if dicta.get('fioselect') != 0:
+                fioselect = dicta.get('fioselect')[0]
+                del dicta['fioselect']
+                modelstol.objects.filter(medflag=False, fio=fioselect).update(medflag=True)
+
+    alertmsg=''
+#    for qrit in queryset:
+#        if qrit.classname == selit:
+#            queryset1.append(qrit)
+    datamodel1 = []
+    sumuch = 0
+    datamodelas = stolovayainfodata.objects.filter(datapit=datasek).order_by('datazapis')
+    for stolm in queryset :
+        flagdata=0
+        for datm in datamodelas :
+            if str(selit) == 'Все':
+                if datm.uchid_id == stolm.id:
+                    flagdata=1
+                    stolm.chkflag = datm.chkflag
+                    sumuch += 1
+                    datamodel1.append(stolm)
+                    break
+            else:
+                if datm.uchid_id == stolm.id and str(selit) == stolm.classname:
+                    flagdata=1
+                    stolm.chkflag = datm.chkflag
+                    datamodel1.append(stolm)
+                    break
+        if str(selit) == 'Все':
+            if flagdata == 0:
+                stolm.chkflag = False
+                sumuch += 1
+                datamodel1.append(stolm)
+        else:
+            if flagdata == 0 and str(selit) == stolm.classname:
+                stolm.chkflag = False
+                sumuch += 1
+                datamodel1.append(stolm)
+
+    querysetnew = modelstol.objects.filter(medflag=False).order_by('classname','typeofeda','fio')
+
+    context = {'queryset':queryset,  'selectitems':selectitems2, 'selit':selit, 'alertmsg':alertmsg, 'dateminmax':dateminmax, 'datasek':datasek, 'datamodel1':datamodel1, 'sumuch':sumuch, 'querysetnew':querysetnew}
+    return render(request, 'stolovaya/stol-med.html', context)

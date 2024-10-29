@@ -1,0 +1,42 @@
+{% extends 'contacts/__base.html' %}
+{% load cms_tags sekizai_tags i18n %}
+
+{% block contacts_content %}
+    {% addtoblock "css" %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}contacts/css/feedback-form.css"/>
+    {% endaddtoblock %}
+
+    <form class="feedback-form" action="" method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="row feedback-form__row">
+            <div class="col-md-4 col-sm-4 col-md-offset-2 col-sm-offset-2">
+                {{ form.name.label_tag }}
+                {{ form.name.errors }}
+                {{ form.name }}
+            </div>
+            <div class="col-md-4 col-sm-4">
+                {{ form.subject.label_tag }}
+                {{ form.subject.errors }}
+                {{ form.subject }}
+            </div>
+        </div>
+        <div class="row feedback-form__row">
+            <div class="col-md-4 col-sm-4 col-md-offset-2 col-sm-offset-2">
+                {{ form.email.label_tag }}
+                {{ form.email.errors }}
+                {{ form.email }}
+            </div>
+            <div class="col-md-4 col-sm-4">
+                {{ form.message.label_tag }}
+                {{ form.message.errors }}
+                {{ form.message }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 col-sm-2 col-md-offset-8 col-sm-offset-8">
+                <input type="submit" class="feedback-form__submit" value={% trans 'Submit' %} />
+            </div>
+        </div>
+    </form>
+{% endblock %}

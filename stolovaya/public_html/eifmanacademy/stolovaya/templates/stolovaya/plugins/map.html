@@ -1,0 +1,23 @@
+{% load sekizai_tags %}
+
+{% addtoblock "js" %}
+    <script src="{{ STATIC_URL }}contacts/js/static-map.js"></script>
+    <script src="https://api-maps.yandex.ru/1.1/index.xml" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://api-maps.yandex.ru/1.1/_YMaps.css?v=0.2.11">
+    <script type="text/javascript" charset="utf-8" src="https://api-maps.yandex.ru/1.1/_YMaps.js?v=0.2.11"></script>
+{% endaddtoblock %}
+
+{% addtoblock "js" %}
+    <script>
+    $(function() {
+        $('.contacts__map').staticMap();
+    });
+    </script>
+{% endaddtoblock %}
+<script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A1dd030dfcb5b592341b0d2433e4403a94b78665a2796144f5489c4be02ffc325&amp;width=100%25&amp;height=335&amp;lang=ru_RU&amp;scroll=true"></script>
+<!--<div class="contacts__map"
+     data-longitude="{{ object.longitude|stringformat:"f" }}"
+     data-latitude="{{ object.latitude|stringformat:"f" }}">
+</div>
+<div id="YMaps__ID" class="contacts__map2" center="{{ object.longitude|stringformat:"f" }},{{ object.latitude|stringformat:"f" }}" zoom="10">
+</div> --!>

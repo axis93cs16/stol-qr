@@ -1,0 +1,136 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags stol_extras %}
+
+{% block content %}
+{% addtoblock 'js_end' %}
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/jszip.min.js"></script>
+<script src="/static/js/dataTables.buttons.min.js"></script>
+<script src="/static/js/buttons.html5.min.js "></script>
+<script src="/static/js/datepicker-ru.js"></script>
+
+<script>
+$(document).ready(function() {
+            var mindatef = (datediff(new Date(), new Date($('#datepickerf1').attr('min'))))+'d';
+            var maxdatef = (datediff(new Date(), new Date($('#datepickerf1').attr('max'))))+'d';
+//            $("#datepickerf2").value = $("#datepickerf1").val()
+            document.getElementById("datepickerf2").value = $("#datepickerf1").val()
+            $("#datepickerf1").datepicker({
+                 dateFormat: 'yy-mm-dd',
+                 minDate: mindatef,
+                 maxDate: maxdatef,
+                 showOn: 'both',
+                 buttonText: 'календарь',
+                  buttonImage: '/static/js/calendar.gif',
+                  buttonImageOnly: true,
+                 hideIfNoPrevNext: true,
+                 locale: {
+                    format: 'yy-mm-dd'
+                    },
+            });
+    $('#my1Table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+        'excel',
+        ],
+    });
+});
+    function datediff(first, second) {
+        //return Math.round((second - first) / (1000 * 60 * 60 * 24));
+        return parseInt((second - first) / (1000 * 60 * 60 * 24));
+    }
+
+</script>
+{% endaddtoblock %}
+{% addtoblock 'css' %}
+<style>
+    .butka{
+        display:block;
+    }
+    #datepickerdiv1{
+        display:block;
+        float:left
+    }
+    #datepickerf1disp{
+        color:black;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:3px;
+    }
+
+
+</style>
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-dataTables/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-dataTables/jquery.dataTables.min.css?v3">
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+{% endaddtoblock %}
+
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+<h1>Отчеты</h1>
+    <form method="POST" id="formstolr1">
+    {% csrf_token %}
+    <input type="hidden" name="formr1" value="1">
+    <input type="hidden" name="datepicker" value="" id="datepickerf2">
+    <input type="hidden" name="otchettype" value=2>
+    <input type="submit" value="Отчет по потреблению" form="formstolr1">
+    </form>
+    <form method="POST" id="formstolr7">
+    {% csrf_token %}
+    <input type="hidden" name="formr7" value="1">
+    <input type="hidden" name="datepicker" value="" id="datepickerf7">
+    <input type="hidden" name="otchettype" value=3>
+    <input type="submit" value="Отчет по потреблению(бух)" form="formstolr7">
+    </form>
+    <form method="POST" id="formstol">{% csrf_token %} <input type="hidden" name="form2" value="1"><input type="hidden" name="otchettype" value=1></form>
+        <div class="input-box">
+            <div id="datepickerdiv1" onclick="$('#datepickerf1').datepicker('show')">
+             <input type="date" value="{{datasek}}" min="{{dateminmax.0}}" max="{{dateminmax.1}}" readonly id="datepickerf1disp" disabled>
+             <input type="hidden" name="datepicker" value='{{ datasek }}' min="{{dateminmax.0}}" max="{{dateminmax.1}}" form="formstol" onchange="javascript:getElementById('formstol').submit()" id="datepickerf1" readonly >
+            </div>
+        </div>
+        <table class="table-one" id="my1Table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>classname</th>
+                <th>fio</th>
+                <th>typeofeda</th>
+                <th>enable-disable</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in datamodel1 %}
+            <tr class="{{obj.typeofeda}}">
+                <td>{{obj.id}}</td>
+                <td>{{obj.classname}}</td>
+                <td><a>{{obj.fio}}</a></td>
+                <td>{{obj.typeofeda}}</td>
+                <td>{{obj.pitendateen}}-{{obj.pitendatedi}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+</div>
+
+
+{% endblock %}

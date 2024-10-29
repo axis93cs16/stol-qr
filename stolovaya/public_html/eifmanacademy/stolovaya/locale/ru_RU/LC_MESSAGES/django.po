@@ -1,0 +1,731 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+#
+# Mikhail Mishechkin(axis93) creator of module
+msgid ""
+msgstr ""
+"Project-Id-Version: django-filebrowser\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-09 10:24+0300\n"
+"PO-Revision-Date: 2013-12-06 08:13+0000\n"
+"Last-Translator: Mikhail\n"
+"Language-Team: Russian (Russia)\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: eifmanacademy/stolovaya/import_export_views.py:174
+msgid "Import finished"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:9 eifmanacademy/stolovaya/models.py:22
+msgid "normal"
+msgstr "Обычные"
+
+#: eifmanacademy/stolovaya/models.py:10
+msgid "lgota14"
+msgstr "Льготники младшие"
+
+#: eifmanacademy/stolovaya/models.py:11
+msgid "lgota59"
+msgstr "Льготники старшие"
+
+#: eifmanacademy/stolovaya/models.py:12
+msgid "internat14"
+msgstr "Интернат младшие"
+
+#: eifmanacademy/stolovaya/models.py:13
+msgid "internat59"
+msgstr "Интернат старшие"
+
+#: eifmanacademy/stolovaya/models.py:14
+msgid "dogovor1"
+msgstr "Договор Тип1(нет супа)"
+
+#: eifmanacademy/stolovaya/models.py:15
+msgid "dogovor2"
+msgstr "Договор Тип2(суп)"
+
+#: eifmanacademy/stolovaya/models.py:16
+msgid "dogovor3"
+msgstr "Договор Тип3(суп)"
+
+#: eifmanacademy/stolovaya/models.py:23
+msgid "2-level"
+msgstr "2-Этаж"
+
+#: eifmanacademy/stolovaya/models.py:24
+msgid "3-level"
+msgstr "3-Этаж"
+
+#: eifmanacademy/stolovaya/models.py:25
+msgid "4-level"
+msgstr "4-Этаж"
+
+#: eifmanacademy/stolovaya/models.py:33 eifmanacademy/stolovaya/models.py:536
+msgid "Group"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:37 eifmanacademy/stolovaya/models.py:42
+msgid "fio"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:41
+msgid "classname"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:43 eifmanacademy/stolovaya/models.py:488
+msgid "typeofeda"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:44 eifmanacademy/stolovaya/models.py:46
+#, fuzzy
+#| msgid "internat14"
+msgid "internat"
+msgstr "Интернат младшие"
+
+#: eifmanacademy/stolovaya/models.py:52
+msgid "Pitanie_po_menu_s"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:56
+msgid "Pitanie_po_menu_po"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:60
+msgid "QR_Code"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:87 eifmanacademy/stolovaya/models.py:88
+msgid "Stolovaya"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:99 eifmanacademy/stolovaya/models.py:126
+#: eifmanacademy/stolovaya/models.py:266
+msgid "datapitaniya"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:109 eifmanacademy/stolovaya/models.py:132
+#: eifmanacademy/stolovaya/models.py:272 eifmanacademy/stolovaya/models.py:493
+#: eifmanacademy/stolovaya/models.py:526 eifmanacademy/stolovaya/models.py:586
+#: eifmanacademy/stolovaya/models.py:627
+msgid "id_uchenika"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:115
+msgid "checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:118 eifmanacademy/stolovaya/models.py:187
+#: eifmanacademy/stolovaya/models.py:327
+msgid "datazapis"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:137 eifmanacademy/stolovaya/models.py:277
+msgid "z_checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:142 eifmanacademy/stolovaya/models.py:282
+msgid "o_checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:147 eifmanacademy/stolovaya/models.py:287
+msgid "p_checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:152 eifmanacademy/stolovaya/models.py:292
+msgid "u1_checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:157 eifmanacademy/stolovaya/models.py:297
+msgid "u2_checked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:162 eifmanacademy/stolovaya/models.py:302
+#, fuzzy
+#| msgid "kompleks"
+msgid "kompleks_checked"
+msgstr "Комплексный Обед"
+
+#: eifmanacademy/stolovaya/models.py:167
+#, fuzzy
+#| msgid "dogovor1"
+msgid "dogovor_1_checked"
+msgstr "Договор Тип1(нет супа)"
+
+#: eifmanacademy/stolovaya/models.py:172
+#, fuzzy
+#| msgid "dogovor2"
+msgid "dogovor_2_checked"
+msgstr "Договор Тип2(суп)"
+
+#: eifmanacademy/stolovaya/models.py:177
+#, fuzzy
+#| msgid "dogovor3"
+msgid "dogovor_3_checked"
+msgstr "Договор Тип3(суп)"
+
+#: eifmanacademy/stolovaya/models.py:182
+#, fuzzy
+#| msgid "zavtrakg"
+msgid "zavtrak_g_checked"
+msgstr "Завтрак(Льгот)"
+
+#: eifmanacademy/stolovaya/models.py:191
+msgid "force_checked_z"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:197
+msgid "force_checked_o"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:203
+msgid "force_checked_p"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:209
+msgid "force_checked_u1"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:215
+msgid "force_checked_u2"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:221
+msgid "force_checked_ok"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:227
+msgid "force_checked_okg1"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:233
+msgid "force_checked_okg2"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:239
+msgid "force_checked_okg3"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:245
+msgid "force_checked_ozg"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:252
+msgid "force_checked_med"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:307
+#, fuzzy
+#| msgid "obedkg1"
+msgid "obedkg1_checked"
+msgstr "Договор Тип1(нет супа)"
+
+#: eifmanacademy/stolovaya/models.py:312
+#, fuzzy
+#| msgid "obedkg2"
+msgid "obedkg2_checked"
+msgstr "Договор Тип2(суп)"
+
+#: eifmanacademy/stolovaya/models.py:317
+#, fuzzy
+#| msgid "obedkg3"
+msgid "obedkg3_checked"
+msgstr "Договор Тип3(суп)"
+
+#: eifmanacademy/stolovaya/models.py:322
+#, fuzzy
+#| msgid "zavtrakg"
+msgid "zavtrakg_checked"
+msgstr "Завтрак(Льгот)"
+
+#: eifmanacademy/stolovaya/models.py:333 eifmanacademy/stolovaya/models.py:390
+#: eifmanacademy/stolovaya/models.py:542
+msgid "zavtrak"
+msgstr "Завтрак"
+
+#: eifmanacademy/stolovaya/models.py:337 eifmanacademy/stolovaya/models.py:394
+#: eifmanacademy/stolovaya/models.py:545
+msgid "obed"
+msgstr "Обед"
+
+#: eifmanacademy/stolovaya/models.py:341 eifmanacademy/stolovaya/models.py:398
+#: eifmanacademy/stolovaya/models.py:548
+msgid "poldnik"
+msgstr "Полдник"
+
+#: eifmanacademy/stolovaya/models.py:345 eifmanacademy/stolovaya/models.py:402
+#: eifmanacademy/stolovaya/models.py:551
+msgid "ujin1"
+msgstr "Ужин 1"
+
+#: eifmanacademy/stolovaya/models.py:349 eifmanacademy/stolovaya/models.py:406
+#: eifmanacademy/stolovaya/models.py:554
+msgid "ujin2"
+msgstr "Ужин 2"
+
+#: eifmanacademy/stolovaya/models.py:353 eifmanacademy/stolovaya/models.py:410
+#: eifmanacademy/stolovaya/models.py:557
+msgid "obedk"
+msgstr "Комплексный Обед"
+
+#: eifmanacademy/stolovaya/models.py:359 eifmanacademy/stolovaya/models.py:415
+#: eifmanacademy/stolovaya/models.py:562
+msgid "obedkg1"
+msgstr "Договор Тип1(нет супа)"
+
+#: eifmanacademy/stolovaya/models.py:365 eifmanacademy/stolovaya/models.py:421
+#: eifmanacademy/stolovaya/models.py:427 eifmanacademy/stolovaya/models.py:567
+msgid "obedkg2"
+msgstr "Договор Тип2(суп)"
+
+#: eifmanacademy/stolovaya/models.py:371 eifmanacademy/stolovaya/models.py:572
+msgid "obedkg3"
+msgstr "Договор Тип3(суп)"
+
+#: eifmanacademy/stolovaya/models.py:377 eifmanacademy/stolovaya/models.py:433
+msgid "zavtrakg"
+msgstr "Завтрак(Льгот)"
+
+#: eifmanacademy/stolovaya/models.py:446 eifmanacademy/stolovaya/models.py:447
+#, fuzzy
+#| msgid "obed"
+msgid "obed2"
+msgstr "Обед"
+
+#: eifmanacademy/stolovaya/models.py:448
+#, fuzzy
+#| msgid "obed"
+msgid "obed3"
+msgstr "Обед"
+
+#: eifmanacademy/stolovaya/models.py:455 eifmanacademy/stolovaya/models.py:477
+#: eifmanacademy/stolovaya/models.py:507 eifmanacademy/stolovaya/models.py:590
+#: eifmanacademy/stolovaya/models.py:608
+msgid "DateTime_otmetka"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:461 eifmanacademy/stolovaya/models.py:483
+#: eifmanacademy/stolovaya/models.py:513 eifmanacademy/stolovaya/models.py:594
+#: eifmanacademy/stolovaya/models.py:614
+msgid "Date_pitania"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:466
+msgid "catoftalon"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:468
+msgid "numoftalons"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:498
+msgid "multiplier"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:519
+msgid "medcenter"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:598
+msgid "type_of_eda_pit"
+msgstr ""
+
+#: eifmanacademy/stolovaya/models.py:620
+msgid "blocked"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/feedback_form.html:38
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:49
+msgid "Submit"
+msgstr "Подтвердить"
+
+#: eifmanacademy/stolovaya/templates/stolovaya/login.html:23
+#, fuzzy
+#| msgid "Please correct the following errors."
+msgid "Please correct the error below."
+msgstr "Пожалуйста, исправьте следующие ошибки."
+
+#: eifmanacademy/stolovaya/templates/stolovaya/login.html:23
+#, fuzzy
+#| msgid "Please correct the following errors."
+msgid "Please correct the errors below."
+msgstr "Пожалуйста, исправьте следующие ошибки."
+
+#: eifmanacademy/stolovaya/templates/stolovaya/login.html:39
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/login.html:59
+msgid "Forgotten your password or username?"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/login.html:64
+msgid "Log in"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:11
+msgid ""
+"Below is a preview of data to be imported. If you are satisfied with the "
+"results, click 'Confirm import'"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:14
+#, fuzzy
+#| msgid "Confirm delete"
+msgid "Confirm import"
+msgstr "Подтвердить удаление"
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:23
+msgid "This importer will import the following fields: "
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:57
+#, fuzzy
+#| msgid "Error."
+msgid "Errors"
+msgstr "Ошибка."
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:68
+msgid "Line number"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:78
+msgid "Preview"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:93
+msgid "New"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:95
+msgid "Skipped"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:97
+msgid "Delete"
+msgstr "Удалить"
+
+#: eifmanacademy/stolovaya/templates/stolovaya/mymodel_upload.html:99
+msgid "Update"
+msgstr ""
+
+#: eifmanacademy/stolovaya/templates/stolovaya/thanks.html:5
+msgid "Ваше сообщение отправлено. Спасибо!"
+msgstr ""
+
+#, python-format
+#~ msgid "Action applied successfully to '%s'"
+#~ msgstr "Действие выполнено удачно для '%s'"
+
+#~ msgid "Flip horizontal"
+#~ msgstr "Отразить горизонтально"
+
+#~ msgid "Flip vertical"
+#~ msgstr "Отразить вертикально"
+
+#~ msgid "Rotate 90° CW"
+#~ msgstr "Повернуть на 90 градусов по часовой стрелке"
+
+#~ msgid "Rotate 90° CCW"
+#~ msgstr "Повернуть на 90 градусов против часовой стрелки"
+
+#~ msgid "Rotate 180°"
+#~ msgstr "Повернуть на 180 градусов"
+
+#~ msgid "The requested Folder does not exist."
+#~ msgstr "Запрошенная папка не найдена."
+
+#~ msgid "The requested File does not exist."
+#~ msgstr "Запрошенный файл не найден."
+
+#~ msgid "You do not have permission to access this file!"
+#~ msgstr "У вас нет прав для доступа к этому файлу!"
+
+#, python-format
+#~ msgid "Extension %(ext)s is not allowed. Only %(allowed)s is allowed."
+#~ msgstr "Расширение %(ext)s не допускается. Только %(allowed)s допустимые."
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Only letters, numbers, underscores, spaces and hyphens are allowed."
+#~ msgstr "Только буквы, цифры, подчеркивания, пробелы и дефисы разрешены."
+
+#~ msgid "The Folder already exists."
+#~ msgstr "Папка уже существует."
+
+#~ msgid "Actions"
+#~ msgstr "Действия"
+
+#~ msgid "The File already exists."
+#~ msgstr "Файл уже существует."
+
+#~ msgid "Folder"
+#~ msgstr "Папка"
+
+#~ msgid "Image"
+#~ msgstr "Изображение"
+
+#~ msgid "Video"
+#~ msgstr "Видео"
+
+#~ msgid "Document"
+#~ msgstr "Документ"
+
+#~ msgid "Audio"
+#~ msgstr "Аудио"
+
+#~ msgid "FileBrowser"
+#~ msgstr "Менеджер файлов"
+
+#, python-format
+#~ msgid "The Folder %s was successfully created."
+#~ msgstr "Папка %s была успешно создана."
+
+#~ msgid "Permission denied."
+#~ msgstr "Доступ запрещен."
+
+#~ msgid "Error creating folder."
+#~ msgstr "Ошибка создания папки."
+
+#~ msgid "New Folder"
+#~ msgstr "Новая папка"
+
+#~ msgid "Select files to upload"
+#~ msgstr "Выберите файлы для загрузки"
+
+#~ msgid "Upload"
+#~ msgstr "Загрузить"
+
+#, python-format
+#~ msgid "Successfully deleted %s"
+#~ msgstr "%s успешно удален"
+
+#~ msgid "Renaming was successful."
+#~ msgstr "Переименование прошло успешно."
+
+#~ msgid "Currently"
+#~ msgstr "Текущий"
+
+#~ msgid "Change"
+#~ msgstr "Изменить"
+
+#~ msgid "Clear"
+#~ msgstr "Очистить"
+
+#~ msgid ""
+#~ "The Name will be normalized by converting or stripping all non-standard "
+#~ "characters."
+#~ msgstr ""
+#~ "Имена файлов будут изменены путем конвертирования или удаления всех "
+#~ "нестандартных символов"
+
+#~ msgid ""
+#~ "The Name will be converted to lowercase. Spaces will be replaced with "
+#~ "underscores."
+#~ msgstr ""
+#~ "Имена файлов будут преобразованы в нижний регистр. Пробелы будут заменены "
+#~ "символом подчеркивания."
+
+#~ msgid "File not found"
+#~ msgstr "Файл не найден"
+
+#, python-format
+#~ msgid ""
+#~ "Are you sure you want to delete \"%(escaped_object)s\"? All of the "
+#~ "following items will be deleted:"
+#~ msgstr ""
+#~ "Вы уверенны что хотите удалить \"%(escaped_object)s\"? Все отмеченные "
+#~ "будут удалены:"
+
+#, python-format
+#~ msgid "... and %(escaped_object)s more Files."
+#~ msgstr "и %(escaped_object)s more Files."
+
+#~ msgid "Cancel"
+#~ msgstr "Отменить"
+
+#~ msgid "Yes, I'm sure"
+#~ msgstr "Да, я уверен."
+
+#~ msgid "Edit"
+#~ msgstr "Изменить"
+
+#~ msgid "Folder Information"
+#~ msgstr "Информации о папке"
+
+#~ msgid "Date"
+#~ msgstr "Дата"
+
+#~ msgid "File Information"
+#~ msgstr "Информация о файле"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "Filesize"
+#~ msgstr "Размер файла"
+
+#~ msgid "Size"
+#~ msgstr "Размер"
+
+#~ msgid "Image Versions"
+#~ msgstr "Версии изображений"
+
+#~ msgid "Thumbnail"
+#~ msgstr "Миниатюра"
+
+#~ msgid "View Image"
+#~ msgstr "Просмотр изображения"
+
+#~ msgid "Save"
+#~ msgstr "Сохранить"
+
+#~ msgid "Save and continue editing"
+#~ msgstr "Сохранить и продолжить редактирование"
+
+#~ msgid "Drop files here to upload"
+#~ msgstr "Выберите файлы для загрузки"
+
+#~ msgid "Upload a file"
+#~ msgstr "Загрузить"
+
+#~ msgid "Failed"
+#~ msgstr "Неудачно"
+
+#~ msgid "{file} has invalid extension. Only {extensions} are allowed."
+#~ msgstr "Недопустимое расширение {file}. Только {extensions} разрешены."
+
+#~ msgid "{file} is too large, maximum file size is {sizeLimit}."
+#~ msgstr "{file} слишком большой, максимальный размер файла {sizeLimit}."
+
+#~ msgid "{file} is too small, minimum file size is {minSizeLimit}."
+#~ msgstr "{file} слишком маленький, минимальный размер файла {minSizeLimit}."
+
+#~ msgid "{file} is empty, please select files again without it."
+#~ msgstr "{file} пустой, пожалуйста, выберите файлы заново без него. "
+
+#~ msgid ""
+#~ "The files are being uploaded, if you leave now the upload will be "
+#~ "cancelled."
+#~ msgstr "Файлы загружаются, если уйдете сейчас, то загрузка будет отменена."
+
+#~ msgid "Please enable Javascript to upload files."
+#~ msgstr "Пожалуйста, включите Javascript для загрузки файлов"
+
+#~ msgid "Help"
+#~ msgstr "Справка"
+
+#~ msgid "Allowed"
+#~ msgstr "Допустимые расширения"
+
+#~ msgid "Max. Filesize"
+#~ msgstr "Макс. размер"
+
+#~ msgid "Filename"
+#~ msgstr "Имя файла"
+
+#~ msgid "Home"
+#~ msgstr "Домой"
+
+#~ msgid "Select"
+#~ msgstr "Выбрать"
+
+#~ msgid "Versions"
+#~ msgstr "Версии"
+
+#~ msgid "Filter"
+#~ msgstr "Фильтр"
+
+#~ msgid "By Date"
+#~ msgstr "По дате"
+
+#~ msgid "Any Date"
+#~ msgstr "Любая дата"
+
+#~ msgid "Today"
+#~ msgstr "Сегодня"
+
+#~ msgid "Past 7 days"
+#~ msgstr "Последние 7 дней"
+
+#~ msgid "This Month"
+#~ msgstr "В этом месяце"
+
+#~ msgid "This year"
+#~ msgstr "В этом году"
+
+#~ msgid "By Type"
+#~ msgstr "По типу файла"
+
+#~ msgid "All"
+#~ msgstr "Все"
+
+#~ msgid "result"
+#~ msgstr "результат"
+
+#~ msgid "results"
+#~ msgstr "результаты"
+
+#~ msgid "total"
+#~ msgstr "итого"
+
+#~ msgid "Type"
+#~ msgstr "Тип"
+
+#~ msgid "Results"
+#~ msgstr "Результат"
+
+#, python-format
+#~ msgid "%(counter)s result"
+#~ msgid_plural "%(counter)s results"
+#~ msgstr[0] "one: %(counter)s результат"
+#~ msgstr[1] "few: %(counter)s результатами"
+#~ msgstr[2] "other: %(counter)sрезультатами"
+
+#, python-format
+#~ msgid "%(full_result_count)s total"
+#~ msgstr "%(full_result_count)s итого"
+
+#~ msgid "Search"
+#~ msgstr "Поиск"
+
+#~ msgid "BROWSE"
+#~ msgstr "BROWSE"
+
+#~ msgid "An Error occured"
+#~ msgstr "An Error occured"
+
+#~ msgid "Completed"
+#~ msgstr "Completed"
+
+#~ msgid "Do you want to replace the file"
+#~ msgstr "Do you want to replace the file"
+
+#~ msgid "KB"
+#~ msgstr "KB"
+
+#~ msgid "MB"
+#~ msgstr "MB"
+
+#~ msgid "Clear Queue"
+#~ msgstr "Clear Queue"
+
+#~ msgid "Flip/Rotate"
+#~ msgstr "Flip/Rotate"
+
+#~ msgid "Transposing was successful."
+#~ msgstr "Transposing was successful."
+
+#~ msgid "SELECT FILES"
+#~ msgstr "SELECT FILES"

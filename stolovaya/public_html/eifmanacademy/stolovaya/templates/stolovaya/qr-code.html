@@ -1,0 +1,571 @@
+
+
+<html>
+<head>
+    <title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.5">
+
+
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.13.2.custom/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css">
+<style>
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .input-box{
+        display:block;
+        float:left;
+        margin:0px;
+        max-width:500px;
+        width:100%;
+    }
+    .input-box #searcher{
+        max-width:500px;
+        width:100%;
+        float:left;
+    }
+    .input-box #searcher #searchline{
+        max-width:400px;
+        width:85%;
+        height:50px;
+        float:left;
+    }
+    .input-box #searcher .button{
+        max-width:100px;
+        width:15%;
+        height:28px;
+        float:left;
+    }
+    .input-box #searcher .select2-container{
+        float:left;
+        height:28px;
+    }
+    #maindivdata{
+        display:block;
+        top:60px;
+        position:relative;
+    }
+    #scannerdata{
+        float:left;
+        border:solid 1px;
+        max-width:500px;
+        min-width:200px;
+        width:100%;
+        height:270px;
+        display:table-cell;
+    }
+    #qr-reader{
+        max-width:500px;
+        width:100%;
+        display:flex;
+    }
+    #qr-reader__scan_region video{
+        max-height:150px;
+    }
+    #eventsdata{
+        float:left;
+        border:solid 1px;
+        max-width:500px;
+        min-width:200px;
+        width:100%;
+        height:250px;
+        display:table-cell;
+        transform-origin: left top;
+        transform: scale(2.3);
+    }
+
+    #eventsdata #headka{
+        height:10%;
+        width:100%;
+        margin:0px;
+    }
+    #eventsdata #headka a#mainka{
+        float:left;
+        display:block;
+        margin:0px;
+        font-size:18px;
+    }
+    #eventsdata #headka a{
+        float:right;
+        display:block;
+        margin:0px;
+        font-size:18px;
+    }
+    #eventsdata #textarea{
+        width:100%;
+        height:90%;
+        overflow-y: scroll;
+        resize: none;
+        margin:0px;
+        font-size:12px;
+    }
+    #catofeda1 div{
+        border: solid black 1px;
+        float:left;
+        margin:5px;
+        padding:0px 3px 0px 3px;
+    }
+    #catofeda1 input[type="radio"]{
+        transform: scale(2.5);
+        margin:12px;
+    }
+    #resultaw{
+        display:block;
+        width:140px;
+        border:solid black 1px;
+        float:right;
+        height:100%;
+        background-color:white;
+        text-align:center;
+    }
+.top {
+    position: fixed;
+    z-index:999;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.top-left {
+    float: left;
+}
+
+.top-right {
+    float: right;
+}
+.button-top {
+    background-color: blue;
+    color: white;
+    margin: 1px;
+    padding: 0.6rem 0.9rem;
+    text-decoration: none;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+#lastresfio b{
+    font-size:22px;
+}
+</style>
+</head>
+<body>
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+
+    <div id="maindivdata">
+    <div id="scannerdata">
+    <div id="qr-reader">  <div id="loadingMessage" hidden="">⌛ Loading video...</div>
+  
+  <div id="output">
+    <div id="outputMessage">Нет обнаруженного QR-кода.</div>
+    <div hidden=""><b>Распознано:</b> <span id="outputData"></span></div>
+    
+  </div><canvas id="canvas" height="140" width="220"></canvas></div>
+    <div id="qr-reader-results"></div>
+    <div id="resultik"></div>
+    <div class="input-box">
+        <form name="formstol4"></form>
+        <div id="searcher">
+        <select id="searchline" name="fioselect" form="formstol4">
+        <option></option>
+        {% for obj in datamodel1 %}
+        <option value={{obj.id}} data-category='{{obj.typeofeda}}' data-zavtrak='{{obj.eda.zavtrak}}' data-obed='{{obj.eda.obed}}' data-poldnik='{{obj.eda.poldnik}}' data-ujin1='{{obj.eda.ujin1}}' data-ujin2='{{obj.eda.ujin2}}' data-obedk='{{obj.eda.obedk}}' data-obedkg1='{{obj.eda.obedkg1}}' data-obedkg2='{{obj.eda.obedkg2}}' data-obedkg3='{{obj.eda.obedkg3}}' data-zavtrakg='{{obj.eda.zavtrakg}}' data-internatp='{{obj.eda.internatp}}' data-dietflag='{{obj.dietflag}}'>{{obj.fio}}-{{obj.classname}}</option>
+        {% endfor %}
+        </select><input type="button" form="formstol4"  class="button" value="Отметить" onclick="form4subm()"/>
+        </div>
+        <div id="catofeda1">
+            <div><input type="radio" value="zavtrak" name="rb" {% if edanow == 'zavtrak' %} checked {% endif %}>З</input></div>
+            <div><input type="radio" value="zavtrak2" name="rb" {% if edanow == 'zavtrak2' %} checked {% endif %}>З2</input></div>
+            <div><input type="radio" value="obed" name="rb" {% if edanow == 'obed' %} checked {% endif %}>О</input></div>
+            <div><input type="radio" value="poldnik" name="rb" {% if edanow == 'poldnik' %} checked {% endif %}>П</input></div>
+            <div><input type="radio" value="ujin1" name="rb" {% if edanow == 'ujin1' %} checked {% endif %}>У1</input></div>
+            <div><input type="radio" value="ujin2" name="rb" {% if edanow == 'ujin2' %} checked {% endif %}>У2</input></div>
+            
+        </div>
+    </div>
+    <div id="lastresfio"><b>фио</b></div>
+    </div>
+    <div id="eventsdata">
+        <div id="headka"><a id="mainka">Журнал</a><div id="resultaw"></div><a>Последний результат</a></div>
+        <textarea id="textarea" disabled>
+{% for obj in datamodel1chk %}{% if obj.dietflag == True %}(Д){% endif %}{{ obj.fio }}-{{ obj.classname }} - {{ obj.datetime|date:'H:i:s' }} - {{ obj.datetime|date:'d.m.Y' }} - {{obj.typeofedapit}} = OK
+{% endfor %}
+        </textarea>
+    </div>
+    </div>
+    <audio id="chatAudio" >
+        <source src="/static/beep.mp3" 
+        type="audio/mpeg">
+    </audio>
+    <audio id="chatAudio2" >
+        <source src="/static/beep2.mp3" 
+        type="audio/mpeg">
+    </audio>
+</body>
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/select2.min.js"></script>
+
+<script src="/static/js/jsQR.js"></script>
+<script>
+
+var qrcodebase = [
+    {% for obj in datamodel1 %}"{{obj.id}}={{obj.qrcode}}",
+    {% endfor %}
+]
+
+
+// ES6 import
+//import jsQR from "jsqr";
+
+// CommonJS require
+//const jsQR = require("jsqr");
+
+//jsQR(...);
+//const code = jsQR(imageData, width, height, options?);
+    var video = document.createElement("video");
+    var canvasElement = document.getElementById("canvas");
+    var canvas = canvasElement.getContext("2d");
+    var loadingMessage = document.getElementById("loadingMessage");
+    var outputContainer = document.getElementById("output");
+    var outputMessage = document.getElementById("outputMessage");
+    var outputData = document.getElementById("outputData");
+    function drawLine(begin, end, color) {
+      canvas.beginPath();
+      canvas.moveTo(begin.x, begin.y);
+      canvas.lineTo(end.x, end.y);
+      canvas.lineWidth = 4;
+      canvas.strokeStyle = color;
+      canvas.stroke();
+    }
+
+    // Use facingMode: environment to attemt to get the front camera on phones
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
+      video.srcObject = stream;
+      video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+      video.play();
+      requestAnimationFrame(tick);
+    });
+
+    async function tick() {
+      loadingMessage.innerText = "⌛ Loading video..."
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        loadingMessage.hidden = true;
+        canvasElement.hidden = false;
+        outputContainer.hidden = false;
+
+        canvasElement.height = 140;
+        canvasElement.width = 220;
+        canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+        var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        var code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
+        });
+        if (code) {
+          drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+          drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+          drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+          drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+          outputMessage.hidden = true;
+          outputData.parentElement.hidden = false;
+          //outputData.innerText = code.data;
+          outputData.innerText = 'Распознан QR-код';
+          onScanSuccess(code.data);
+          
+        } else {
+          outputMessage.hidden = false;
+          outputData.parentElement.hidden = true;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    var audio = document.getElementById('chatAudio');
+        async function playsnd(){
+            audio.play()
+        }
+    var audio2 = document.getElementById('chatAudio2');
+        //async function playsnd2(){
+        async function playsnd2(){
+            audio2.play()
+        }
+
+
+    var lastResult, countResults=0;
+    var st1=0;
+    function onScanSuccess(decodedText) {
+        if (decodedText !== lastResult) {
+            ++countResults;
+            lastResult = decodedText;
+            // Handle on success condition with the decoded message.
+            console.log(`Scan result ${decodedText}`);
+            //document.getElementById('resultik').innerHTML = decodedText;
+            if (arrayContains(decodedText, qrcodebase)){submittobase(decodedText.split('=')[0]);};
+        } else {
+            if (st1 == 0){
+                setTimeout(function(){
+                    lastResult=0;
+                    st1=0;
+                    //alert("tmout");
+                    },4500);
+                st1=1;
+                //alert("okfunc");
+            }
+        }
+
+    }
+
+    $(document).ready(function() {
+
+    $('#searchline').select2({
+        placeholder: "Начните писать ФИО ученика",
+        maximumSelectionLength: 2,
+        language: "ru",
+//        allowClear: true,
+        closeOnSelect: true,
+    });
+    });
+ $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+function getfulldatetxt(){
+    thisdate = new Date();
+    dday = thisdate.getDate() + "";
+    if (dday.length==1) dday = "0" + dday;
+    dmonth = thisdate.getMonth() + 1 + "";
+    if (dmonth.length==1) dmonth = "0" + dmonth;
+    dyear = thisdate.getFullYear() + "";
+    fulldate1 = dday + '.' + dmonth + '.' + dyear;
+    
+    dhour = thisdate.getHours()+"";
+    if (dhour.length==1) dhour = "0" + dhour;
+    dminute = thisdate.getMinutes()+"";
+    if (dminute.length==1) dminute = "0" + dminute;
+    dsecond = thisdate.getSeconds()+"";
+    if (dsecond.length==1) dsecond = "0" + dsecond;
+    fulltime1 = dhour + ':' + dminute + ':' + dsecond;
+
+    return fulltime1 + ' - ' + fulldate1
+};
+function form4subm(){
+    //console.log('ok');
+    //console.log(document.getElementsByName("fioselect")[0].value);
+    //console.log($('#searchline option[value!=""][value|=' + document.getElementsByName("fioselect")[0].value + ']:first').html());
+    submittobase(document.getElementsByName("fioselect")[0].value)
+};
+function submittobase(valofsel){
+    var retres = {}
+    thistimeform = getfulldatetxt();
+    retres = ajaxformgoto(valofsel);
+    console.log(retres);
+    thiseda = retres.catofeda;
+
+    category32 = $('#searchline option[value!=""][value|=' + valofsel + ']:first').data('category');
+    dietflag32 = $('#searchline option[value!=""][value|=' + valofsel + ']:first').data('dietflag');
+    if (dietflag32 == "False"){
+        dietflagtxt = ""
+    }else{
+        dietflagtxt = "(Д)"
+    };
+    $('#textarea').prepend( dietflagtxt + $('#searchline option[value!=""][value|=' + valofsel + ']:first').html() +  " - " + thistimeform + " - " + thiseda + " = " + retres.valid + "\n");
+    $('#lastresfio').html("<b>"+$('#searchline option[value!=""][value|=' + valofsel + ']:first').html()+"</b>")
+
+    switch(category32){
+        case 'dogovor1':
+            $('#mainka').html('Договор1(нет супа)');
+            break;
+        case 'dogovor2':
+            $('#mainka').html('Договор2(суп)');
+            break;
+        case 'dogovor3':
+            $('#mainka').html('Договор3(3х раз)');
+            break;
+        case 'internatp':
+            $('#mainka').html('Интернат-Пл(5ти раз)');
+            break;
+        case 'internat14':
+            if (dietflag32 == "False"){
+                $('#mainka').html('Интернат Мл');
+            }else{
+                $('#mainka').html('Интернат Мл ДИЕТА');
+            };
+            break;
+        case 'internat59':
+            if (dietflag32 == "False"){
+                $('#mainka').html('Интернат ст');
+            }else{
+                $('#mainka').html('Интернат ст ДИЕТА');
+            };
+            break;
+        case 'lgota14':
+            $('#mainka').html('Льготник Мл');
+            break;
+        case 'lgota59':
+            $('#mainka').html('Льготник Ст');
+            break;
+        case 'normal':
+            $('#mainka').html('Обычный');
+            break;
+        default:
+            $('#mainka').html('Ошибка');
+            break;
+    }
+    if ((category32 == "dogovor1") || (category32 == "dogovor2") || (category32 == "dogovor3") || (category32 == "internatp")){
+            $('#headka').css('background-color','#3399FF');
+        };
+        if ((category32 == "internat14") || (category32 == "internat59")){
+            if (dietflag32 == "False"){
+                $('#headka').css('background-color','#FFFF66');
+            }else{
+                $('#headka').css('background-color','#99FF66');
+            };
+        };
+        if ((category32 == "lgota14") || (category32 == "lgota59")){
+            $('#headka').css('background-color','#FF6666');
+        };
+        if (category32 == "normal"){
+            $('#headka').css('background-color','#FFFFFF');
+        };
+    //alert(category32);
+    if (retres.valid == "ОК") {
+        $('#resultaw').css('background-color','green');
+        $('#resultaw').html(retres.valid);
+        playsnd();
+        console.log('ok');
+    } else {
+        $('#resultaw').css('background-color','red');
+        $('#resultaw').html(retres.valid);
+        playsnd2();
+        console.log('fail');
+        };
+        $('#scannerdata').effect("highlight", {}, 1500);
+
+}
+function arrayContains(needle, arrhaystack)
+{
+    return (arrhaystack.includes(needle));
+}
+
+function ajaxformgoto(valofsel){
+            var arrofeda = [];
+            var retres = {};
+            retres.valid = '*?*';
+            catofeda=$("#catofeda1 input[type='radio'][name='rb']:checked")[0].value;
+            dzavtrak=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('zavtrak');
+            if ($('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obed')){
+                dzavtrak2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obed');
+            }else{
+                dzavtrak2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedk');
+            }
+            dobed=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obed');
+            dpoldnik=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('poldnik');
+            dujin1=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('ujin1');
+            dujin2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('ujin2');
+            dobedk=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedk');
+            dobedkg1=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedkg1');
+            dobedkg2=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedkg2');
+            dobedkg3=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('obedkg3');
+            dzavtrakg=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('zavtrakg');
+            dinternatp=$('#searchline option[value!=""][value|=' + valofsel + ']:first').data('internatp');
+            if (dzavtrak == "True") arrofeda.push("zavtrak");
+            if (dzavtrak2 == "True") arrofeda.push("zavtrak2");
+            if (dobed == "True") arrofeda.push("obed");
+            if (dpoldnik == "True") arrofeda.push("poldnik");
+            if (dujin1 == "True") arrofeda.push("ujin1");
+            if (dujin2 == "True") arrofeda.push("ujin2");
+            if (dobedk == "True") arrofeda.push("obed");
+            if (dobedkg1 == "True") arrofeda.push("obed");
+            if (dobedkg2 == "True") arrofeda.push("obed");
+            if (dobedkg3 == "True") {
+            arrofeda.push("zavtrak");
+            arrofeda.push("obed");
+            arrofeda.push("ujin1");
+            }
+            if (dinternatp == "True") {
+            arrofeda.push("zavtrak");
+            arrofeda.push("zavtrak2");
+            arrofeda.push("obed");
+            arrofeda.push("poldnik");
+            arrofeda.push("ujin1");
+            arrofeda.push("ujin2");
+            }
+            if (dzavtrakg == "True") arrofeda.push("zavtrak");
+            //alert("З"+dzavtrak+" О"+dobed+" П"+dpoldnik+" У1"+dujin1+" У2"+dujin2+" КО"+dobedk+" Д1"+dobedkg1+" Д2"+dobedkg2+" ЗГ"+dzavtrakg);
+            //alert(catofeda)
+            //alert(dzavtrak)
+            //alert(arrofeda);
+            //alert(catofeda);
+            //alert(arrayContains(catofeda, arrofeda)+"-"+arrofeda+"="+catofeda);
+            //console.log('ok1');
+            //console.log(arrofeda + " _ " + catofeda);
+            if (arrayContains(catofeda, arrofeda)){
+                //console.log('ok2');
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: "{% url 'stolovaya:scanscan' %}",
+                    data:{
+                        csrfmiddlewaretoken:'{{ csrf_token }}',
+                        uchid:valofsel,
+                        catofeda:catofeda,
+                    },
+                success: function(data){
+                        console.log(data);
+                        retres = Object.assign({},data);
+                        console.log(retres);
+                    },
+                error: function(error){
+                    console.log(error);
+                },
+                })
+            } else {
+                retres.valid = 'Отказать';
+            };
+            console.log(retres);
+            return retres;
+};
+</script>
+<script>
+function refreshAt(hours, minutes, seconds) {
+    var now = new Date();
+    var then = new Date();
+
+    if(now.getHours() > hours ||
+       (now.getHours() == hours && now.getMinutes() > minutes) ||
+        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+    }
+    then.setHours(hours);
+    then.setMinutes(minutes);
+    then.setSeconds(seconds);
+
+    var timeout = (then.getTime() - now.getTime());
+    setTimeout(function() { window.location.reload(true); }, timeout);
+}
+window.onload=function(){
+    refreshAt(07,40,10);
+    refreshAt(09,30,15);
+    refreshAt(12,00,10);
+    refreshAt(16,50,10);
+}
+</script>
+</html>

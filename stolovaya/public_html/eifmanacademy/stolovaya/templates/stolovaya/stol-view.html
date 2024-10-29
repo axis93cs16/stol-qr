@@ -1,0 +1,482 @@
+{% extends CMS_TEMPLATE %}
+{% load i18n sekizai_tags cms_tags stol_extras %}
+
+{% block extrajs %}
+
+{% endblock %}
+
+{% block content %}
+{% addtoblock 'js_end' %}
+<script src="/static/js/jquery-3.6.1.min.js"></script>
+<script src="/static/js/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/jszip.min.js"></script>
+<script src="/static/js/dataTables.buttons.min.js"></script>
+<script src="/static/js/buttons.html5.min.js "></script>
+<script>
+    if (document.readyState == 'loading') {
+        // ещё загружается, ждём события
+        document.addEventListener('DOMContentLoaded', work);
+    } else {
+        // DOM готов!
+        work();
+    }
+    function work() {
+}
+</script>
+<script>
+$(function() {
+    $(".button__click").on("click", function() {
+        $('#ExportedHtmlTable2').DataTable({
+//            dom: 'Bfrtip',
+            paging: false,
+            searching: false,
+//            buttons: [
+//                'excel'
+//                'excelHtml5',
+//                'csvHtml5',
+//            ]
+        });
+
+    });
+});
+</script>
+{% endaddtoblock %}
+
+{% addtoblock "css" %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/html" href="/static/js/jquery-dataTable/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/html" href="/static/js/jquery-dataTable/jquery.dataTables.min.css">
+<style>
+    .divpit{
+        float:left;
+        background-color:#DDDDFF;
+        margin:5px;
+        padding:5px;
+        border-radius:5px;
+        box-shadow:4px 4px 8px 0px rgb(34 60 80 / 20%);
+        color:black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .divpit input[type="checkbox"]{
+        transform: scale(2);
+    }
+    .medcenter{
+        color:#220000;
+        font-weight: bold;
+    }
+    .correctedval{
+        background-color:#FF6666;
+    }
+    .cl_internat14{
+        background-color:#FFFF66;
+    }
+    .cl_internat59{
+        background-color:#FFFF66;
+    }
+    .cl_lgota14{
+        background-color:#FF6666;
+    }
+    .cl_lgota59{
+        background-color:#FF6666;
+    }
+    .cl_dogovor1, .cl_dogovor2, .cl_dogovor3{
+        background-color:#3399FF;
+    }
+    .cl_normal{
+        background-color:#FFFFFF;
+    }
+    .cl_obedk{
+        background-color:#FF6666;
+    }
+    .cl_obedkg1, .cl_obedkg2, .cl_obedkg3{
+        background-color:#3399FF;
+    }
+    .cl_zavtrak, .cl_obed, .cl_poldnik, .cl_ujin1, .cl_ujin2{
+        background-color:#FFFF66;
+    }
+    .cl_zavtrakg {
+        background-color:#FF9999;
+    }
+    #svodnaya_pit  tr:nth-child(2n) {
+    //background: #A0A0A0; /* Цвет фона */
+        font-weight:bold;
+        font-style:italic;
+    }
+    #svodnaya_pit tr:nth-child(2n+1) {
+    background: #E0E0E0; /* Цвет фона */
+    }
+    #svodnaya_pit tr td:nth-child(1) {
+    background: #D0D0D0; /* Цвет фона */
+    }
+    @media (max-width: 750px) {
+        .consul-tables {
+            display:block!important;
+            /*scale:0.5;*/
+            left:0px;
+            position:relative;
+            /*overflow:hidden;*/
+            width:100%;
+        }
+        .table-block{
+            transform-origin: left top;
+            scale:0.5;
+            max-width: 100%;
+            padding: 0px;
+            margin: 0px!important;
+            width: min-content;
+        }
+        #svodnaya_pit{
+            transform-origin: left top;
+            scale:0.7;
+            padding:0px;
+            margin:0px;
+        }
+
+    }
+    .itog{
+        border-top:solid black 8px;
+        border-bottom:solid black 8px;
+    }
+    .container{
+        width:100%;
+        margin:0px;
+        padding:0px;
+        /*overflow:hidden;*/
+    }
+    .table-one{
+        margin:0px;
+        padding:0px;
+    }
+</style>
+<style>
+  .tabs {
+    font-size: 0;
+  }
+
+  .tabs>input[type="radio"] {
+    display: none;
+  }
+
+  .tabs>div {
+    /* скрыть контент по умолчанию */
+    display: none;
+    border: 1px solid #e0e0e0;
+    /*padding: 10px 15px;*/
+    font-size: 16px;
+  }
+
+  /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
+  #tab-btn-1:checked~#content-1,
+  #tab-btn-2:checked~#content-2,
+  #tab-btn-3:checked~#content-3 {
+    display: block;
+  }
+
+  .tabs>label {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #b5b5b5;
+    border: 1px solid #e0e0e0;
+    padding: 2px 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+  }
+
+  .tabs>label:not(:first-of-type) {
+    border-left: none;
+  }
+
+  .tabs>input[type="radio"]:checked+label {
+    background-color: #9e9;
+    border-bottom: 1px solid #aaa;
+  }
+</style>
+
+{% endaddtoblock %}
+{% placeholder "content" %}
+<div class="top">
+    <div class="top-left">
+        <a class="button-top" href="/index">На Главную</a>
+        <a class="button-top" href="#" onclick="javascript:getElementById('formstol').submit()">Обновить</a>
+    </div>
+    <div class="top-right">
+        {% if not user.is_authenticated %}
+        <a class="button-top" href="/accounts/login/">Вход</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a><u>{{user.username}}</u></a>
+        <a class="button-top" href="/accounts/logout/">Выход</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container">
+
+
+    <h1>Режим просмотра для планирования питания</h1>
+    <form method="POST" id="formstol">
+        {% csrf_token %}
+        <div class="input-box">
+            <input type="date" name="datepicker" value='{{ datasek }}' onchange="javascript:getElementById('formstol').submit()">
+            <select name="selit" onchange="javascript:getElementById('formstol').submit()">
+                <option value="all" {% if selit == 'all' %} selected="selected" {% endif %}>Полный список</option>
+                <option value="noneda" {% if selit == 'noneda' %} selected="selected" {% endif %}>Не питающиеся</option>
+                <option value="yepeda" {% if selit == 'yepeda' %} selected="selected" {% endif %}>Питающиеся</option>
+                <option value="zavtrak" {% if selit == 'zavtrak' %} selected="selected" {% endif %}>Завтрак</option>
+                <option value="obed" {% if selit == 'obed' %} selected="selected" {% endif %}>Обед</option>
+                <option value="poldnik" {% if selit == 'poldnik' %} selected="selected" {% endif %}>Полдник</option>
+                <option value="ujin1" {% if selit == 'ujin1' %} selected="selected" {% endif %}>Ужин1</option>
+                <option value="ujin2" {% if selit == 'ujin2' %} selected="selected" {% endif %}>Ужин2</option>
+                <option value="med" {% if selit == 'med' %} selected="selected" {% endif %}>Медцентр</option>
+                {% for itsel in selectitems %}
+                <option value="{{itsel}}" {% if selit == itsel %} selected="selected" {% endif %}>Класс {{itsel}}</option>
+                {% endfor %}
+            </select>
+            <input type="button" onclick="javascript:getElementById('formstol').submit()" value="Применить">
+        </div>
+        <table class="table-one">
+            <tr>
+                <th>Дата питания</th>
+                <th>Ученик(класс)</th>
+                <th>Приемы пищи</th>
+                {%comment%}<th>Отметка</th>{%endcomment%}
+                <th>Дата время отметки о присутствии</th>
+            </tr>
+            {% for obj in nextqqq %}
+            <tr class="{{obj.lgota}}">
+                <td>{{obj.datapit|date:'d.m.y'}}</td>
+                <td {% if obj.medflag %} class="medcenter" {% endif %}>{{obj.fio}}({{obj.classname}}){% if obj.medflag %} =Медцентр {% endif %}{%if obj.dietflag != False %} - ДИЕТА{% endif %}</td>
+                <td><div class="divpit">{% trans obj.lgota %} &nbsp</div>
+                {% comment %}{{ obj.eda|get_value:'zavtrak' }}{% endcomment %}
+                
+                {% for objk, obje in obj.eda.items %}
+                    {% if objk == 'zavtrak' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaz' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaz'}} {%endif%}">З=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'obed' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkao' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkao'}} {%endif%}">О=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'poldnik' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkap' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkap'}} {%endif%}">П=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'ujin1' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkau1' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkau1'}} {%endif%}">У1=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'ujin2' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkau2' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkau2'}} {%endif%}">У2=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'zavtrakg' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkazg' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkazg'}} {%endif%}">ЗЛ=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'obedk' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaok' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaok'}} {%endif%}">КОМ=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'obedkg1' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaokg1' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaokg1'}} {%endif%}">ГОР1=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'obedkg2' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaokg2' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaokg2'}} {%endif%}">ГОР2=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'obedkg3' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaokg3' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaokg3'}} {%endif%}">ГОР3=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'internatp' %} <div class="divpit {%if not obj.eda|get_value:'correctirovkaokg3' is null %} correctedval" title="{{obj.eda|get_value:'correctirovkaokg3'}} {%endif%}">ИНТП=<input type=checkbox {% if obje == 'True' %} checked {% endif %} disabled></div>{% endif %}
+                    {% if objk == 'datapittime' %} <div class="divpit">отметка= {{obje|date:'d.m.Y H:i:s'}}</div>{% endif %}
+                    {% if objk == 'datapit' %} <div class="divpit">С {{obje|date:'d.m.y'}}</div>{% endif %}
+                    {% if objk == 'correctirovka' %} <div class="divpit">принудительно={{obje|date:'d.m.Y H:i:s'}}</div>{% endif %}
+                    {% if objk == 'datsq' %} <div class="divpit">{{obje}}</div>{% endif %}    
+                {% endfor %}
+                <div class="divpit">Кол-во={{obj.xvarx}}</div>
+                </td>
+                {%comment%}<td>{{obj.chkflag}}</td>{%endcomment%}
+                <td>{{obj.datazapis|date:'d.m.Y H:i'}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="100%" height="20px"></td>
+            </tr>
+            <tr>
+                <td colspan="100%">
+                    <a>
+                        {% for obje, obja in lgotaarr.items %}
+                        {{obje}}={{obja}}
+                        {% endfor %}
+                    </a>
+                    <a>Итого: <b>{{ nextartext }}</b></a>
+            </tr>
+            <tr>
+                <td colspan="100%">
+                    Количество детей Началки питающиеся вчера завтраком кроме Интерната: {{ nachalka_zavtrak_en }}чел из {{ nachalka_zavtrak }}чел присутствуюших {{ datasek }}
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div class="consul-tables tabs">
+  <input type="radio" name="tab-btn" id="tab-btn-1" value="">
+  <label for="tab-btn-1">ИТОГИ</label>
+  <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+  <label for="tab-btn-2">Сводная по людям(классы)</label>
+  <input type="radio" name="tab-btn" id="tab-btn-3" value="" checked>
+  <label for="tab-btn-3">Сводная по питанию(классы)</label>
+          <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ПЕРВАЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div id="content-1">
+        <div class="table-block">
+            <h3>По приемам пищи(медцентр)</h3>
+            <table>
+            <th>тип</th>
+            <th>норм</th>
+            <th>диета</th>
+                {% for obje, obja in lgotaarrvsedamed.items %}
+                <tr>
+                    <td>
+                        {% trans obje %}
+                    </td>
+                    <td><b>{{obja.normal}}</b></td>
+                    <td><b>{{obja.diet}}</b></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        
+        
+
+        <div class="table-block">
+            <h3>По приемам пищи(без медцентра)</h3>
+            <table>
+            <th>тип</th>
+            <th>норм</th>
+            <th>диета</th>
+                {% for obje, obja in lgotaarrvseda.items %}
+                <tr>
+                    <td>
+                        {% trans obje %}
+                    </td>
+                    <td><b>{{obja.normal}}</b></td>
+                    <td><b>{{obja.diet}}</b></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="table-block">
+            <h3>по льготам(без медцентра)</h3>
+            <table>
+            <th>тип</th>
+            <th>норм</th>
+            <th>диета</th>
+                {% for obje, obja in lgotaarr2.items %}
+                <tr class="cl_{{obje}}">
+                    <td>{% trans obje %}</td>
+                    <td>{{obja.normal}}</td>
+                    <td>{{obja.diet}}</td>
+                </tr>
+                {% endfor %}
+
+                <tr>
+                    <td colspan="100%">Итого: <b>{{ nextartext2 }}</b></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="table-block">
+            <h3>По Медцентру</h3>
+            <table>
+            <th>тип</th>
+            <th>норм</th>
+            <th>диета</th>
+                {% for obje, obja in lgotaarrvsmed.items %}
+                <tr class="cl_{{obje}}">
+                    <td>
+                        {% trans obje %}
+                    </td>
+                    <td><b>{{obja.normal}}</b></td>
+                    <td><b>{{obja.diet}}</b></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="table-block">
+            <h3>по классам(без медцентра)</h3>
+            <table>
+            <th>тип</th>
+            <th>норм</th>
+            <th>диета</th>
+                {% for obje, obja in sumuchall.items %}
+                <tr {% if obja < 1 %} class="lgota14" {% endif %}>
+                    <td>{{obje}}</td>
+                    <td>{{obja.normal}}</td>
+                    <td>{{obja.diet}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+
+        </div>
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ПЕРВАЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ВТОРАЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div id="content-2">
+        <div class="table-block">
+            <h3>сводная по людям(без медцентра)</h3>
+            <table>
+                {% for obje, obja in lgotaarrvs2.items %}
+                <tr>
+                    <td>
+                        {{obje}}
+                    </td>
+                    {% for objc, objd in obja.items %}
+                    <td class="cl_{{objc}}"><i>{% trans objc %}</i></td>
+                    <td class="cl_{{objc}}"><b>{{objd}}</b></td>
+                    
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        </div>
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ВТОРАЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ТРЕТЬЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div id="content-3">
+
+        <div class="table-block">
+            <h3>сводная по примемам пищи и классам(без медцентра)</h3>
+            <table id="svodnaya_pit">
+                {% for obje, obja in list_of_unique_eda_class_eda.items %}
+                {% if obje == '105A' %}
+                <tr class="itog">
+                    <td>Началка</td>
+                    {% for objki,objk in nachalkasum.items %}
+                        <td class="cl_{{objki}}"><i>{% trans objki %}</i></td>
+                        <td class="cl_{{objki}}"><b>{{objk.normal}}/{{objk.diet}}</b></td>
+                    {% endfor %}
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        {{obje}}
+                    </td>
+                    {% for objc, objd in obja.items %}
+                    <td class="cl_{{objc}}"><i>{% trans objc %}</i></td>
+                    <td class="cl_{{objc}}"><b>{{objd}}</b></td>
+                    
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        </div>
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ТРЕТЬЯ ВКЛАДКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    </div>
+</div>
+
+
+
+
+
+<div style='display:none'>
+                    <section class="button1">
+                        <div class="button__area divpit" align=center>
+                            <button id="button__click" class="button__click">Изменить</button>
+                        </div>
+                    </section>
+<table id='ExportedHtmlTable'>
+{% for isa in datamodel2 %}
+{% if isa.pk == 1 %}<thead><th>id</th><th>datapit</th><th>classname</th><th>fio</th><th>typeofeda</th><th>internat</th><th>medflag</th><th>pitenflag</th>{% for itk,ite in isa.eda.items %}<th>{{itk}}</th>{% endfor %}</thead><tbody>{% endif %}
+<tr>
+<td>{{isa.id}}</td><td>{{isa.datapit}}</td><td>{{isa.classname}}</td><td>{{isa.fio}}</td><td>{{isa.typeofeda}}</td><td>{{isa.intenat}}</td><td>{{isa.medflag}}</td><td>{{isa.pitenflag}}</td>{% for itk,ite in isa.eda.items %}<td>{{ite}}</td>{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

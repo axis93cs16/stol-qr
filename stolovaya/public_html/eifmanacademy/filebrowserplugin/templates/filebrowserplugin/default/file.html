@@ -1,0 +1,22 @@
+{% load sekizai_tags static %}
+{% addtoblock 'css' %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}academy/css/partner.css"/>
+{% endaddtoblock %}
+
+<div class="col-md-4 col-sm-4 partner">
+    <div class="partner__link">
+            <a href="/media/{{ instance.link.path }}" {% if instance.link_target %} target="{{ instance.link_target }}"{% endif %} title={{ instance.title }}>
+                <img style="width:32px; height:32px;"src=
+                {% if instance.link.filetype == "PDF" %} {% static "filebrowser/img/filer/file-pdf.svg" %}
+                {% elif instance.link.filetype == "Archive" %} {% static "filebrowser/img/filer/file-zip.svg" %}
+                {% elif instance.link.filetype == "Document" %} {% static "filebrowser/img/filer/file-document.svg" %}
+                {% elif instance.link.filetype == "Table" %} {% static "filebrowser/img/filer/file-excel.svg" %}
+                {% elif instance.link.filetype == "Image" %} {% static "filebrowser/img/filer/file-picture.svg" %}
+                {% elif instance.link.filetype == "Audio" %} {% static "filebrowser/img/filer/file-audio.svg" %}
+                {% elif instance.link.filetype == "Video" %} {% static "filebrowser/img/filer/file-video.svg" %}
+                {% else %} {% static "filebrowser/img/filer/folder-unfiled.svg" %} {% endif %}
+                >
+                {{ instance.title }} {% if instance.showsize %}({{ instance.link.filesize|filesizeformat }}){% endif %}
+            </a> 
+    </div>
+</div>

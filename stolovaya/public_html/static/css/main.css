@@ -1,0 +1,161 @@
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td,
+th {
+    border: 1px solid #333;
+    padding: 5px;
+}
+
+.internat14,
+.internat59 {
+    background-color: #FFFF66;
+}
+
+.lgota14,
+.lgota59 {
+    background-color: #FF3333;
+}
+
+.dogovor1,
+.dogovor2,
+.dogovor3,
+.internatp {
+    background-color: #3399FF;
+}
+
+.button-block {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    overflow: auto;
+    flex-direction: column;
+    z-index:100;
+    margin:auto;
+}
+.button-block2 {
+    width: 100%;
+    height: 100%-60px;
+    position: relative;
+    top: 60px;
+    left: 0;
+    display: block;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    overflow: auto;
+    flex-direction: column;
+    z-index:100;
+    margin:auto;
+}
+.title {
+    padding-bottom: 2rem;
+}
+.buttonidx{
+    display:inline-flex;
+}
+
+.dividx{
+    text-align:center;
+}
+
+.button {
+    background-color: blue;
+    color: white;
+    margin: 10px;
+    font-size: 1.5em;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+.top {
+    position: fixed;
+    z-index:999;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.top-left {
+    float: left;
+}
+
+.top-right {
+    float: right;
+}
+
+.button-top {
+    background-color: blue;
+    color: white;
+    margin: 1px;
+    padding: 0.6rem 0.9rem;
+    text-decoration: none;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+.input-box {
+    line-height: 60px;
+}
+
+.input-box input,
+select {
+    font-size: 30px;
+    height: 45px;
+}
+
+.table-one {
+    width: 100%;
+}
+
+.table-block {
+    display: inline-block;
+    margin: 0 2rem;
+}
+
+.checkbox {
+    text-align: center;
+}
+
+.checkbox input {
+    transform: scale(2);
+}
+
+@media (max-width: 600px) {
+    .button {
+        font-size: 2em;
+        display: block;
+        margin-bottom: 1em;
+    }
+
+    .table-one td {
+        font-size: 1em;
+    }
+    .input-box input,
+    select {
+        font-size: 20px;
+    }
+}
+@media (max-width: 750px) {
+    .consul-tables {
+        display: none;
+    }
+}
